@@ -1,9 +1,20 @@
 package Interception.src.main;
 
 public class Declarations {
-    public static final double PI = 3.1415926535; 
+    private static final double PI = 3.1415926535; 
+    public final int NUMPOINTS; 
+    private Point[] points;
 
-    // enum CONNECTORS
+    // hard-coded arrays
+    private boolean[] CMV = new boolean[15]; // Conditions Met Vector
+    private boolean[][] PUM = new boolean[15][15]; // Preliminary Unlocking Matrix
+    private boolean[] FUV = new boolean[15]; // Final Unlocking Vector
+
+    // For these, we accept them from outside
+    private Connectors[][] LCM; // Logical Connector Matrix
+    private boolean[] PUV; // Preliminary Unlocking Vector
+
+    // enum CONNECTORS for LCM array
     public enum Connectors {
         NOTUSED(777),
         ORR(-1),  
@@ -18,23 +29,6 @@ public class Declarations {
         public int getValue() {
             return value;
         }
-    }
-
-    public static class Coordinate {
-        public double[] points = new double[100]; // pointer to an array of 100 doubles
-    }
-
-    public static class CMatrix {
-        public Connectors[][] matrix = new Connectors[15][15]; //pointer to a 2-D array of [15,15] CONNECTORS
-    }
-
-    public static class BMatrix {
-        public boolean[][] matrix = new boolean[15][15]; // pointer to a 2-D array of [15,15] booleans
-        // might need to convert input if input is a array of 0s and 1s.
-    }
-
-    public static class Vector {
-        public boolean[] vector = new boolean[15]; // pointer to an array of 15 booleans
     }
 
     // enum COMPTYPE
@@ -54,24 +48,35 @@ public class Declarations {
         }
     }
 
+    public Parameters params;
+
+    // constructor
+    public Declarations(int NUMPOINTS, 
+                        Point[] points, 
+                        Parameters params, 
+                        Connectors[][] LCM, 
+                        boolean[] PUV) {
+        this.NUMPOINTS = NUMPOINTS;  // final
+        this.points = points;
+        this.params = params;
+        this.LCM = LCM;
+        this.PUV = PUV;
+    } 
+
     // test code
     public static void main(String[] args) {
-        System.out.println("PI: " + PI);
+        System.out.println("PI: "+PI);
 
         Connectors connector = Connectors.NOTUSED;
-        System.out.println("Connector Value: " + connector.getValue());
+        System.out.println("Connector Value: "+connector.getValue());
 
-        Coordinate coordinate = new Coordinate();
-        coordinate.points[0] = 1.0;
-        coordinate.points[1] = 2.0;
-        System.out.println("First coordinate point: " + coordinate.points[0]);
+        // constructor ex
+        Point[] points = new Point[100]; 
+        Parameters params = new Parameters();
+        Connectors[][] LCM = new Connectors[15][15];
+        boolean[] PUV = new boolean[15];
 
-        BMatrix bMatrix = new BMatrix();
-        bMatrix.matrix[0][0] = true;
-        System.out.println("First value in BMatrix: " + bMatrix.matrix[0][0]);
-
-        Vector vector = new Vector();
-        vector.vector[0] = true;
-        System.out.println("First value in Vector: " + vector.vector[0]);
+        Declarations declarations = new Declarations(100, points, params, LCM, PUV);
+        System.out.println("NUMPOINTS: "+declarations.NUMPOINTS);
     }
 }
