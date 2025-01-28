@@ -126,6 +126,52 @@ public class Declarations {
         return false; 
     }
 
+    public boolean compute_lic_2(){
+            double EPS = params.EPSILON;      
+            if (NUMPOINTS < 3) return false;
+            for (int i = 1; i < NUMPOINTS - 1; i++) {
+                Point p1 = points[i - 1];
+                Point p2 = points[i];    
+                Point p3 = points[i + 1];
+
+                System.out.println(
+                    "p1: (" + points[i-1].getX() + ", " + points[i-1].getY() + "), " +
+                    "p2: (" + points[i].getX()   + ", " + points[i].getY()   + "), " +
+                    "p3: (" + points[i+1].getX() + ", " + points[i+1].getY() + ")"
+                );
+        
+                // Skip if p2 coincides with p1 or p2 coincides with p3 => angle undefined
+                if ((p2.getX() == p1.getX() && p2.getY() == p1.getY()) ||
+                    (p2.getX() == p3.getX() && p2.getY() == p3.getY())) {
+                    continue;
+                }
+
+                double b = p1.distance(p2);  
+                double a = p2.distance(p3);  
+                double c = p1.distance(p3);  
+
+                double cosVal = (a*a + b*b - c*c) / (2.0 * a * b);
+                
+                // Clamp cosVal to [-1, 1]
+                if (cosVal > 1.0) {   cosVal = 1.0;}
+                if (cosVal < -1.0) { cosVal = -1.0;}
+        
+                // angle in [0, PI]
+                double angle = Math.acos(cosVal);
+                System.out.println("a="+a+" b="+b+" c="+c+" angle="+angle);
+                System.out.printf("i=%d, angle=%.4f, EPS=%.4f =>\n", i, angle, EPS);
+
+     
+                if (angle < (PI - EPS) || angle > (PI + EPS)) {
+                    return true;
+                }
+    
+            }        
+            return false;
+
+    }
+
+
 
     /*
      * Help function for calculating the area of a triangle given its three sides.

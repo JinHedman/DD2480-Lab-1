@@ -42,7 +42,7 @@ class DecideTest {
     }
 
     /*
-     * Function for testing if LIC returns the correct boolean value.   
+     * Function for testing if LIC1 returns the correct boolean value.   
      * Returns true when the three points can not be circumscribed by a circle with radius RADIUS1.
      * Returns false when the three points can be circumscribed by a circls with radius RADIUS1.
      */
@@ -65,6 +65,44 @@ class DecideTest {
 
 
     }
+
+    /*
+     * Function for testing if LIC2 works as expected.
+     * Returns true when the angle is less then PI minus epsilon or greater then PI + epsilon.
+     * Returns false when the number of points is less than three, the points are colinear or when points coincide.
+     */
+    @Test 
+    void testLic2() {
+        // 1) Should return true if the angle at p2 is acute => angle < PI - EPS.
+        Point[] points = new Point[] { new Point(0,0), new Point(1,0), new Point(2,1) };
+        Parameters testParam = new Parameters();
+        testParam.EPSILON = 0.1;  // a small epsilon
+        Declarations dec = new Declarations(3, points, testParam, null, null);
+        assertTrue(dec.compute_lic_2(),
+            "Expected true because the angle at p2 is acute, so angle < PI - EPS.");
+    
+        // 2) Only 2 points => cannot form a triple => should return false
+        Point[] pts = new Point[] { new Point(0,0), new Point(1,1) };
+        Parameters paramsFalse = new Parameters();
+        paramsFalse.EPSILON = 0.5;  
+        Declarations declarations = new Declarations(2, pts, paramsFalse, null, null);
+        assertFalse(declarations.compute_lic_2(),
+            "Should return false if there are fewer than 3 points.");
+    
+        // 3) Three consecutive collinear points => angle at middle = PI => expect false
+        Point[] pointColinear = new Point[] { new Point(0,0), new Point(1,0), new Point(2,0) };
+        Parameters paramsColinear = new Parameters();
+        paramsColinear.EPSILON = 0.1;  // must set on paramsColinear
+        Declarations decColinear = new Declarations(3, pointColinear, paramsColinear, null, null);
+    
+        assertFalse(decColinear.compute_lic_2(),
+            "Angle is exactly PI => not < PI - EPS, not > PI + EPS => should be false.");
+    }
    
     
 }
+
+
+
+
+

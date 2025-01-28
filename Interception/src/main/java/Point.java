@@ -48,7 +48,7 @@ package Interception.src.main.java;
          double diff_x = (this.x - s.x);
          double dix_y = (this.y - s.y);
  
-         return (Math.sqrt((diff_x*diff_x)-(dix_y*dix_y)));
+         return (Math.sqrt((diff_x*diff_x)+(dix_y*dix_y)));
      }
  
 
