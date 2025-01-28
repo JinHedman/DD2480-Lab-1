@@ -63,6 +63,23 @@ public class Declarations {
         this.PUV = PUV;
     } 
 
+
+    /*
+     * Code for the assertion that two consequitive points are a 
+     */
+    public boolean compute_lic_0(){
+        for(int i=1; i < NUMPOINTS; i++){
+            if(points[i].distance(points[i-1]) > params.LENGTH1){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    
+
+
+
     // test code
     public static void main(String[] args) {
         System.out.println("PI: "+PI);
