@@ -1,4 +1,4 @@
-package Interception.src.main;
+package Interception.src.main.java;
 
 public class Parameters {
     public double LENGTH1;

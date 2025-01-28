@@ -1,4 +1,4 @@
-package Interception.src.main;
+package Interception.src.main.java;
 
 /*
  * Code for creating points with x and y-coordinates in the cartesian plane. 
