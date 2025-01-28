@@ -84,12 +84,13 @@ class DecideTest {
     
 
     /*
-     * Function for testing if LIC0 is true, which means testing if there are two points at a distance greater than length LENGTH1 from each other. 
-     * It also tests if LIC0 returns false when it is supposed to, which is when there are no consequtive points at a distance greater than 
+     * Function for testing if LIC0 returns true when it is supposed to, which means testing if ir returns true when there are
+     * two consecutive points at a distance greater than length LENGTH1 from each other. 
+     * It also tests if LIC0 returns false when it is supposed to, which is when there are no consecutive points at a distance greater than 
      * LENGTH1 from each other. 
      */ 
     @Test
-    void testLic0True(){
+    void testLic0(){
         Parameters params = new Parameters();
         params.LENGTH1 = 3; 
         int NUMPOINTS = 3;
@@ -108,6 +109,30 @@ class DecideTest {
 
     }
 
+    /*
+     * Function for testing if LIC returns the correct boolean value.   
+     * Returns true when the three points can not be circumscribed by a circle with radius RADIUS1.
+     * Returns false when the three points can be circumscribed by a circls with radius RADIUS1.
+     */
+    @Test 
+    void testLic1(){
+        Parameters params = new Parameters();
+        params.RADIUS1 = 5;
+        int NUMPOINTS = 3;
+
+
+        // Should return true.
+        Point[] points = new Point[] {new Point(0, 0), new Point(11, 0), new Point(10, 3) };     
+        Declarations trueDecide = new Declarations(NUMPOINTS, points, params, null, null);
+        assertTrue(trueDecide.compute_lic_1());
+
+        // should return false.: a simple right angle triangle. it should not pass since the hypothenuse is 5.
+        Point[] negativePoints = new Point[] {new Point(0, 0), new Point(3, 0), new Point(3, 4) };     
+        Declarations falseDecide = new Declarations(NUMPOINTS, negativePoints, params, null, null);
+        assertFalse(falseDecide.compute_lic_1());
+
+
+    }
    
     
 
