@@ -62,6 +62,7 @@ public class Declarations {
         this.LCM = LCM;
         this.PUV = PUV;
     } 
+  
 
     /*
      * Code for the assertion that there exists two points that are K_PTS apart and atleast one of them have
@@ -101,6 +102,20 @@ public class Declarations {
         }
         return part1 && part2;
     }
+
+
+    /*
+     * Code for the assertion that two consequitive points are a 
+     */
+    public boolean compute_lic_0(){
+        for(int i=1; i < NUMPOINTS; i++){
+            if(points[i].distance(points[i-1]) > params.LENGTH1){
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     // test code
     public static void main(String[] args) {
