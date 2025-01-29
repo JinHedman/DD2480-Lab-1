@@ -185,6 +185,28 @@ public class Declarations {
         return false; 
     }
   
+    public boolean compute_lic_14() {
+        boolean greaterThanArea1 = false;
+        boolean lessThanArea2 = false;
+        for (int i = 0; i < NUMPOINTS - (params.E_PTS + 1) - (params.F_PTS + 1); i++) {
+            double a = points[i].distance(points[i + (params.E_PTS + 1)]); 
+            double b = points[i].distance(points[i + (params.E_PTS + 1) + (params.F_PTS + 1)]);
+            double c = points[i + (params.E_PTS + 1)].distance(points[i + (params.E_PTS + 1) + (params.F_PTS + 1)]);
+
+            double area = heronsRule(a, b, c);
+            if (area > params.AREA1) {
+                greaterThanArea1 = true;
+            }
+            if (area < params.AREA2) {
+                lessThanArea2 = true;
+            }
+            if (greaterThanArea1 && lessThanArea2) {
+                return true;
+            }
+        }
+        return false;
+    }
+  
     /*
      * Code to assert LIC11, if there exists two points seperated by G_PTS consecutive intervening points in bounds.
      * And that NUMPOINTS < 3, 1<= G_PTS <= NUMPOINTS-2.
@@ -193,7 +215,6 @@ public class Declarations {
         if(NUMPOINTS<3){
             return false;
         }
-
         // asses G_PTS
         if(params.G_PTS<1 || params.G_PTS>NUMPOINTS-2){
             return false;
