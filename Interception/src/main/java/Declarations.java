@@ -166,6 +166,27 @@ public class Declarations {
         }
         return false; 
     }
+    /*
+     * Code for asserting if the distance between two points are greater than LENGTH1
+     */
+    public boolean compute_lic_7(){
+        // the number of numpoints are too few
+        if(NUMPOINTS < 3){
+            return false;
+        }
+        for(int i = 0; i <= NUMPOINTS-params.K_PTS-2;i++){
+            int j = i + params.K_PTS+1;
+            // out of bounds check
+            if(j>=NUMPOINTS){
+                continue;
+            }
+            if(points[i].distance(points[j])>params.LENGTH1){
+                return true;
+            }  
+        }
+        // no pair fits the condition
+        return false; 
+    }
 
     public boolean compute_lic_2(){
             double EPS = params.EPSILON;      
