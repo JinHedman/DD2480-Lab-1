@@ -1,5 +1,8 @@
 package Interception.src.main.java;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class Declarations {
     private static final double PI = 3.1415926535; 
     public final int NUMPOINTS; 
@@ -124,6 +127,50 @@ public class Declarations {
             }
         }
         return false; 
+    }
+
+
+    public boolean compute_lic_4(){
+        int Q_PTS = params.Q_PTS;
+        int QUADS = params.QUADS;
+
+        // guard checks
+        if (Q_PTS < 2 || Q_PTS > NUMPOINTS) {
+            return false;
+        }
+        if (QUADS < 1 || QUADS > 3) {
+            return false;
+        }
+
+        for (int start = 0; start <= NUMPOINTS - Q_PTS; start++) {
+            // HashSet only contains unique elements.
+            Set<Integer> distinctQuads = new HashSet<>();
+            for (int j = 0; j < Q_PTS; j++) {
+                Point p = points[start + j];
+                distinctQuads.add(getQuadrant(p));
+                if (distinctQuads.size() > QUADS) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    /*
+     * Uses priory order to place them in the correct quadrant. 
+     */
+    private int getQuadrant(Point p) {
+        double x = p.getX();
+        double y = p.getY();
+        // Quadrant I
+        if (x >= 0 && y >= 0) return 1;
+        // Quadrant II
+        else if (x <= 0 && y >= 0) return 2;
+        // Quadrant III
+        else if (x <= 0 && y <= 0) return 3;
+        // Quadrant IV
+        else return 4;
     }
 
 

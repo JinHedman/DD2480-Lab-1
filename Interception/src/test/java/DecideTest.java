@@ -65,6 +65,73 @@ class DecideTest {
 
 
     }
+
+
+
+    /*
+     * Function for testing if LIC4 returns the correct boolean values.
+     * Returns true when a set of Q_pts lies in more than QUADS quadrants.
+     * Returns false when Q_Pts is less than two
+     */
+    @Test 
+    void testLic4(){
+        Parameters params = new Parameters();
+
+        // Should return true when a set of Q_pts lies in more than Quads quadrants
+        params.Q_PTS = 3;
+        params.QUADS = 2;
+        int NUMPOINTS = 5;
+        // Points covering Quadrants I, II, III
+        Point[] truePoints = new Point[]{new Point(1, 1), new Point(-1, 1), new Point(-1, -1),  new Point(1, -1),  new Point(2, 2)};
+        Declarations trueDecide = new Declarations(NUMPOINTS, truePoints, params, null, null);
+        assertTrue(trueDecide.compute_lic_4(), "Should return true when a set of Q_PTS points lies in more than QUADS quadrants");
+
+        // Should return false when Q_pts is less than two. 
+        params.Q_PTS = 1; 
+        params.QUADS = 1;
+        // Can use the same points
+        Declarations lessQ_pts = new Declarations(NUMPOINTS, truePoints, params, null, null);
+        assertFalse(lessQ_pts.compute_lic_4(),"Should return false when Q_PTS < 2");
+    
+        // Should return false when Q_pts is greater than NUMPOINTS.
+        params.Q_PTS = 6;
+        params.QUADS = 2;
+        Declarations tooGreatQ_points = new Declarations(NUMPOINTS, truePoints, params, null, null);
+        assertFalse(tooGreatQ_points.compute_lic_4(),"Should return false when Q_PTS > NUMPOINTS");
+        
+        // Should return false when QUADS is less than 1. 
+        params.QUADS = 0; // invalid
+        Declarations tooSmallQuads = new Declarations(NUMPOINTS, truePoints, params, null, null);
+        assertFalse(tooSmallQuads.compute_lic_4(),
+        "Should return false when QUADS < 1");
+
+        // Should return false when QUADS is greater than 3.
+        params.QUADS = 4; // invalid
+        NUMPOINTS = 5;
+        Declarations tooLargeQuads = new Declarations(NUMPOINTS, truePoints, params, null, null);
+        assertFalse(tooLargeQuads.compute_lic_4(),"Should return false when QUADS > 3");
+
+        // Should return false when no set of Q_pts lie in more than QUADS quadrants. 
+        params.Q_PTS = 3;
+        params.QUADS = 2;
+        // All points lie in Quadrant I and II only
+        Point[] falsePoints = new Point[]{
+                new Point(1, 1),   // I
+                new Point(-1, 1),  // II
+                new Point(2, 2),   // I
+                new Point(-2, 1),  // II
+                new Point(3, 3)    // I
+        };
+        Declarations falseCase = new Declarations(NUMPOINTS, falsePoints, params, null, null);
+         assertFalse(falseCase.compute_lic_4(),
+                "Should return false when no set of Q_PTS points lies in more than QUADS quadrants");
+
+
+    }
    
     
 }
+
+
+
+
