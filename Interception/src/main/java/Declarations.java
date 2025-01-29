@@ -649,6 +649,7 @@ public class Declarations {
             }
         }
         return FUV;
+    }
     // getter function for pu
     public boolean[]  getCMV(){
         return CMV;
