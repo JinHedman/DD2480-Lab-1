@@ -719,72 +719,94 @@ class DecideTest {
     }
    
 
+
+//-----------------------LIC13 tests---------------------------------------------
+
     /*
-     * Function for testing LIC13 returns expected value for the given instances.
+     * Tests that LIC13 returns true when a triplet of points exists where the radius
+     * of the circle passing through them is greater than RADIUS1 and less than or equal to RADIUS2.
      */
     @Test
-    void testLic13() {
+    void testLic13TripletMeetsBothConditions() {
         Parameters params = new Parameters();
         params.A_PTS = 1;
         params.B_PTS = 1;
         params.RADIUS1 = 1.5;
         params.RADIUS2 = 2.5;
-        int NUMPOINTS = 5;
-
-        // Test case where a triplet meets both conditions (radius > RADIUS1 and <= RADIUS2)
-        Point[] pointsTrue = new Point[] {
+        int numPoints = 5;
+        Point[] points = new Point[]{
             new Point(0, 0),
             new Point(1, 1),
             new Point(4, 0),
             new Point(3, 3),
             new Point(7, 0)
         };
-        Declarations decideTrue = new Declarations(NUMPOINTS, pointsTrue, params, null, null);
-        assertTrue(decideTrue.compute_lic_13());
+        Declarations decide = new Declarations(numPoints, points, params, null, null);
+        assertTrue(decide.compute_lic_13());
+    }
 
-        // Test case where no triplet meets both conditions
-        params.RADIUS1 = 3.0;
-        params.RADIUS2 = 1.0;
-        Declarations decideFalse = new Declarations(NUMPOINTS, pointsTrue, params, null, null);
-        assertFalse(decideFalse.compute_lic_13());
-
-        // Test case with insufficient points (NUMPOINTS < 5)
-        int smallNumPoints = 4;
-        Point[] smallPoints = new Point[4];
-        for (int i = 0; i < smallNumPoints; i++) {
-            smallPoints[i] = new Point(i, i);
-        }
-        Declarations decideSmall = new Declarations(smallNumPoints, smallPoints, params, null, null);
-        assertFalse(decideSmall.compute_lic_13());
-
-        // Test case where maxI is negative (A_PTS and B_PTS too large)
-        params.A_PTS = 3;
-        params.B_PTS = 3;
-        int numPoints = 5;
-        Point[] maxIPoints = new Point[numPoints];
-        for (int i = 0; i < numPoints; i++) {
-            maxIPoints[i] = new Point(i, i);
-        }
-        Declarations decideMaxI = new Declarations(numPoints, maxIPoints, params, null, null);
-        assertFalse(decideMaxI.compute_lic_13());
-
-        // Test case with two triplets: one meets condition1, the other condition2
+    /*
+     * Tests that LIC13 returns false when no triplet of points has a radius
+     * that satisfies both conditions (RADIUS1 and RADIUS2 set to conflicting values).
+     */
+    @Test
+    void testLic13NoTripletMeetsConditions() {
+        Parameters params = new Parameters();
         params.A_PTS = 1;
         params.B_PTS = 1;
         params.RADIUS1 = 3.0;
         params.RADIUS2 = 1.0;
-        int numPointsTwo = 6;
-        Point[] pointsTwo = new Point[] {
+        int numPoints = 5;
+        Point[] points = new Point[]{
             new Point(0, 0),
-            new Point(0, 1),
-            new Point(8, 0),
-            new Point(0, 3),
-            new Point(8, 0),
-            new Point(0, 5)
+            new Point(1, 1),
+            new Point(4, 0),
+            new Point(3, 3),
+            new Point(7, 0)
         };
-        Declarations decideTwo = new Declarations(numPointsTwo, pointsTwo, params, null, null);
-        assertTrue(decideTwo.compute_lic_13());
+        Declarations decide = new Declarations(numPoints, points, params, null, null);
+        assertFalse(decide.compute_lic_13());
     }
+
+    /*
+     * Tests that LIC13 returns false when there are fewer than 5 points.
+     */
+    @Test
+    void testLic13InsufficientPoints() {
+        Parameters params = new Parameters();
+        params.A_PTS = 1;
+        params.B_PTS = 1;
+        params.RADIUS1 = 3.0;
+        params.RADIUS2 = 1.0;
+        int numPoints = 4;
+        Point[] points = new Point[numPoints];
+        for (int i = 0; i < numPoints; i++) {
+            points[i] = new Point(i, i);
+        }
+        Declarations decide = new Declarations(numPoints, points, params, null, null);
+        assertFalse(decide.compute_lic_13());
+    }
+
+    /*
+     * Tests that LIC13 returns false when A_PTS and B_PTS are too large
+     * to form any valid triplet (negative maxI index calculation).
+     */
+    @Test
+    void testLic13TooLargeAPtsAndBPts() {
+        Parameters params = new Parameters();
+        params.A_PTS = 3;
+        params.B_PTS = 3;
+        int numPoints = 5;
+        Point[] points = new Point[numPoints];
+        for (int i = 0; i < numPoints; i++) {
+            points[i] = new Point(i, i);
+        }
+        Declarations decide = new Declarations(numPoints, points, params, null, null);
+        assertFalse(decide.compute_lic_13());
+    }
+
+//----------------------------------------------------------------------
+
 
     /*
      * Function for testing if LIC10 is true, which means testing if there exists at least one set of three data points separated by exactly E_PTS 
