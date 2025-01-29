@@ -62,6 +62,46 @@ public class Declarations {
         this.LCM = LCM;
         this.PUV = PUV;
     } 
+  
+
+    /*
+     * Code for the assertion that there exists two points that are K_PTS apart and atleast one of them have
+     * distance greater than LENGTH1 and atleast one of them have distance smaller than LENGTH2
+     */
+    public boolean compute_lic_12() {
+        if (NUMPOINTS < 3) {
+            return false;
+        }
+        if (params.K_PTS <= 0) {
+            return false;
+        }
+        if (params.LENGTH2 < 0) {
+            return false;
+        }
+        // Calculate the maximum index i such that i + K_PTS + 1 < numPoints
+        int maxI = NUMPOINTS - params.K_PTS - 2;
+        if (maxI < 0) {
+            return false; // No valid pairs possible
+        }
+        boolean part1 = false;
+        boolean part2 = false;
+        for (int i = 0; i <= maxI; i++) {
+            int j = i + params.K_PTS + 1;
+            double dx = points[j].getX() - points[i].getX();
+            double dy = points[j].getY() - points[i].getY();
+            double distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance > params.LENGTH1) {
+                part1 = true;
+            }
+            if (distance < params.LENGTH2) {
+                part2 = true;
+            }
+            if (part1 && part2) {
+                break;
+            }
+        }
+        return part1 && part2;
+    }
 
 
     /*
@@ -75,6 +115,7 @@ public class Declarations {
         }
         return false;
     }
+
 
     // Need to return the smallest possible circle 
     public boolean compute_lic_1(){
