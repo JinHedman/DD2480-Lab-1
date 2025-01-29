@@ -108,6 +108,8 @@ class DecideTest {
 
 
     }
+  
+  
     /*
      * Function for testing if LIC1 returns the correct boolean value.   
      * Returns true when the three points can not be circumscribed by a circle with radius RADIUS1.
@@ -132,6 +134,37 @@ class DecideTest {
     }
 
   
+  /*
+     * Function for testing if LIC9 returns the correct boolean value.   
+     * Returns true when the three points create a angle which satisfiy angle < (PI−EPSILON) or angle > (PI+EPSILON).
+     * Returns false if the three points create a angle which does not satisfy the above statement or if NUMPOINTS < 5, 1 ≤ C PTS, 1 ≤ D PTS, C PTS+D PTS ≤ NUMPOINTS−3.
+     */
+    @Test
+    void testLic9() {
+        Parameters params = new Parameters();
+        params.C_PTS = 1;
+        params.D_PTS = 1;
+        params.EPSILON = 0.1;
+        
+        int NUMPOINTS = 5;
+        Point[] points = new Point[] {
+            new Point(0, 0),  // A (first)
+            new Point(1, 1),
+            new Point(2, 2),  // B (second)
+            new Point(3, 1),
+            new Point(4, 0)   // C (third)
+        };
+
+        Declarations declarations = new Declarations(NUMPOINTS, points, params, null, null);
+        assertTrue(declarations.compute_lic_9(), "LIC9 should return true when an angle outside the range is found");
+
+        Point[] collinearPoints = new Point[] {
+            new Point(0, 0), new Point(2, 2), new Point(4, 4), new Point(6, 6), new Point(8, 8)
+        };
+        Declarations collinearDecide = new Declarations(NUMPOINTS, collinearPoints, params, null, null);
+        assertFalse(collinearDecide.compute_lic_9(), "LIC9 should return false for collinear points");
+    }
+    
       /*
      * Function for testing if LIC7 works correctly. It tests cases where NUMPOINTS < 3,
      * cases where the condition is met, and cases where the condition is not met.
@@ -139,7 +172,6 @@ class DecideTest {
     @Test
     void testLic7() {
         Parameters params = new Parameters();
-
         // case 1 NUMPOINTS < 3,  should return false
         params.LENGTH1 = 5;
         params.K_PTS = 1;

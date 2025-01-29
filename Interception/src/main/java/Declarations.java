@@ -218,6 +218,46 @@ public class Declarations {
     }
 
 
+    /*
+     * LIC 9
+     * Code for asserting the angle of three data points 
+     */
+    public boolean compute_lic_9(){
+        if(NUMPOINTS<5){
+            return false;
+        }
+        // ensure valid parameters
+        if(params.C_PTS<1 || params.D_PTS<1 || params.C_PTS+params.D_PTS > NUMPOINTS-3){
+            return false;
+        }
+        for(int i = 0; i < NUMPOINTS - params.C_PTS-params.D_PTS-2;i++){
+            int first = i;
+            int second = i + params.C_PTS+1;
+            int third = second + params.D_PTS+1;
+
+            // check if within bounds
+            if(third >= NUMPOINTS){
+                continue;
+            }
+
+            Point A = points[first];
+            Point B = points[second];
+            Point C = points[third];
+
+            // check if either the first or third point coincides with the second point, if so skip
+            if((A.x == B.x && A.y == B.y) || (C.x == B.x && C.y == B.y)){
+                continue;
+            }
+            double angle = calcAngle(A, B, C);
+
+            // check if angle satisfies conditon
+            if(angle < (Math.PI-params.EPSILON) || angle>(Math.PI+params.EPSILON)){
+                return true;
+            }
+        }
+        // default
+        return false;
+    }
 
     /*
      * Help function for calculating the area of a triangle given its three sides.
@@ -226,6 +266,33 @@ public class Declarations {
         double s = (a+b+c)/2;
         double A = Math.sqrt((s*(s-a)*(s-b)*(s-c)));
         return A; 
+    }
+
+    /*
+     * Help function for calculating the angle of three given dots using vector dot product.
+     */
+    private double calcAngle(Point A, Point B, Point C){
+        double BA_x = A.x - B.x;
+        double BA_y = A.y - B.y;
+        double BC_x = C.x - B.x;
+        double BC_y = C.y - B.y;
+
+        double dotPro = (BA_x * BC_x) + (BA_y * BC_y);
+
+        double magBA = Math.sqrt(BA_x * BA_x + BA_y * BA_y);
+        double magBC = Math.sqrt(BC_x * BC_x + BC_y * BC_y);
+
+        // check for zero division
+        if(magBA == 0 || magBC == 0){
+            return Math.PI;
+        }
+
+        // compute angle
+        double cosThe = dotPro / (magBA*magBC);
+        // clamp cosThe to valid range
+        cosThe = Math.max(-1.0,Math.min(1.0, cosThe));
+
+        return Math.acos(cosThe);
     }
 
 
