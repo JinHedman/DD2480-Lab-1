@@ -177,6 +177,12 @@ public class Declarations {
 
     // Need to return the smallest possible circle 
     public boolean compute_lic_1(){
+
+        // Need to do some checks
+        if(NUMPOINTS < 3 || params.RADIUS1 < 0){
+            return false;
+        }
+
         for(int i = 2; i< NUMPOINTS; i++){
             double a = points[i-2].distance(points[i]);  
             double b = points[i-1].distance(points[i]);           

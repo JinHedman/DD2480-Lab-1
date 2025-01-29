@@ -13,30 +13,111 @@ import Interception.src.main.java.Declarations;
 
 class DecideTest {
   
-      /*
-     * Function for testing if LIC returns the correct boolean value.   
-     * Returns true when the three points can not be circumscribed by a circle with radius RADIUS1.
-     * Returns false when the three points can be circumscribed by a circls with radius RADIUS1.
+
+//------------------------LIC1---------------------------------------
+
+
+    /**
+     * Tests the “true” scenario:
+     *  - There exists at least one set of three consecutive points whose minimum
+     *    enclosing circle has radius strictly greater than RADIUS1.
      */
-    @Test 
-    void testLic1(){
-        Parameters params = new Parameters();
-        params.RADIUS1 = 5;
-        int NUMPOINTS = 3;
-
-
-        // Should return true.
-        Point[] points = new Point[] {new Point(0, 0), new Point(11, 0), new Point(10, 3) };     
-        Declarations trueDecide = new Declarations(NUMPOINTS, points, params, null, null);
-        assertTrue(trueDecide.compute_lic_1());
-
-        // should return false.: a simple right angle triangle. it should not pass since the hypothenuse is 5.
-        Point[] negativePoints = new Point[] {new Point(0, 0), new Point(3, 0), new Point(3, 4) };     
-        Declarations falseDecide = new Declarations(NUMPOINTS, negativePoints, params, null, null);
-        assertFalse(falseDecide.compute_lic_1());
-
-
+    void testLic1True_Advanced() {
+    
+        // Scenario 1: Exactly 3 points that obviously won't fit in radius = 4
+        Parameters paramsA = new Parameters();
+        paramsA.RADIUS1 = 4.0;
+        Point[] pointsA = new Point[] {
+            new Point(0, 0),
+            new Point(10, 0),   
+            new Point(10, 1)  
+        };
+        Declarations decA = new Declarations(3, pointsA, paramsA, null, null);
+        assertTrue(decA.compute_lic_1(),"Expected true because these 3 consecutive points require a circle radius > 4.");
+    
+        // Scenario 2: More points (5 points total),
+        // with at least one triplet that doesn't fit in radius = 5.0
+        Parameters paramsB = new Parameters();
+        paramsB.RADIUS1 = 5.0;
+        Point[] pointsB = new Point[] {
+            new Point(0, 0),  // p0
+            new Point(2, 2),  // p1
+            new Point(6, 7),  // p2
+            new Point(7, 1),  // p3
+            new Point(10,10)  // p4
+        };
+        
+        Declarations decB = new Declarations(5, pointsB, paramsB, null, null);
+    
+        // This should be true, since the final triplet (p2, p3, p4) won't fit.
+        assertTrue( decB.compute_lic_1(),  "At least one of the triplets among these 5 points should require a circle radius > 5.");
+    
+        Parameters paramsC = new Parameters();
+        paramsC.RADIUS1 = 4.0;
+        Point[] pointsC = {
+            new Point(0, 0),  
+            new Point(3, 4),  
+            new Point(4, -1),  
+            new Point(10, 10) 
+        };
+    
+        Declarations decC = new Declarations(4, pointsC, paramsC, null, null);
+    
+        assertTrue( decC.compute_lic_1(), "Expected true because at least one set of (3) consecutive points likely needs radius > 4.");
     }
+
+    /**
+     * Tests the “false” scenario:
+     * 1) If NUMPOINTS < 3, we cannot form a consecutive triplet -> return false.
+     * 2) If all consecutive triplets fit in a circle of radius RADIUS1, return false.
+     */
+    @Test
+    void testLic1False() {
+        // Case A: NUMPOINTS < 3 => automatically false
+        Parameters paramsFew = new Parameters();
+        paramsFew.RADIUS1 = 5.0;
+        Point[] fewPoints = new Point[] {
+            new Point(0, 0),
+            new Point(1, 1)
+        };
+        Declarations decFew = new Declarations(2, fewPoints, paramsFew, null, null);
+        assertFalse(decFew.compute_lic_1(), "Should return false when fewer than 3 points are available.");
+
+        // Case B: Three consecutive points that DO fit in a circle of radius 5
+        Parameters params = new Parameters();
+        params.RADIUS1 = 5.0;
+        Point[] fitPoints = new Point[] {
+            new Point(0, 0),
+            new Point(3, 0),
+            new Point(3, 4)  
+        };
+        Declarations decFit = new Declarations(3, fitPoints, params, null, null);
+        assertFalse( decFit.compute_lic_1(), "Should return false when the three consecutive points do fit in a circle of radius 5.");
+    }
+
+    /**
+     * Tests “invalid input” according to the contract:
+     * RADIUS1 must satisfy 0 ≤ RADIUS1. If RADIUS1 < 0, we expect false.
+     */
+    @Test
+    void testLic1InvalidInput() {
+        Parameters invalidParams = new Parameters();
+        invalidParams.RADIUS1 = -1; // invalid
+        int numPoints = 3;
+
+        Point[] points = new Point[] {
+            new Point(0, 0),
+            new Point(3, 0),
+            new Point(3, 4)
+        };
+        Declarations dec = new Declarations(numPoints, points, invalidParams, null, null);
+
+        // Assertion verifying the contract:
+        // "Should return false because RADIUS1 < 0 is invalid."
+         assertFalse(dec.compute_lic_1(), "Should return false for invalid (negative) RADIUS1." );
+    }
+//----------------------------------------------------------------------
+
 
 
     @Test
