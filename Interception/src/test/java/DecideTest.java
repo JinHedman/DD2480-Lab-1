@@ -459,57 +459,89 @@ class DecideTest {
 
     }
   
-    /*
-     * Function for testing if LIC3 returns the correct boolean values.
-     * Returns true when the three points
-     * Returns false when there are less than three points, the points can not form a triangle, the area is negative or the area is less than AREA1.
+
+
+//------------------------ LIC3 ---------------------------------------
+
+    /**
+     * Tests the “true” scenario:
+     * - There exists at least one set of three consecutive points whose triangle 
+     *   area is strictly greater than AREA1.
      */
     @Test
-    void testLIC3(){
-
-        // should return true when there is a triangle with area greater than AREA1.
+    void testLic3True() {
         Parameters params = new Parameters();
-        
-        params.AREA1 = 1.0;
-        int NUMPOINTS=  5;
-        Point [] truePoints = new Point[] { new Point(0, 0),new Point(2, 0), new Point(0, 2), new Point(1, 1), new Point(3, 3)  };
-        Declarations trueDecide = new Declarations(NUMPOINTS, truePoints, params, null, null);
-        assertTrue(trueDecide.compute_lic_3(), "Should return true when at least one triangle has area greater than AREA1.");
-    
+        params.AREA1 = 1.0;  // we want to see if area > 1 is possible
+        int numPoints = 5;
 
-        // Test that it returns false if the number of points is less than three.
-        params.AREA1 = 1.0;
-        NUMPOINTS = 2;
-        Point[] toFewPoints = new Point[] { new Point(0, 0),new Point(1, 1)};
-        Declarations falseDecide = new Declarations(NUMPOINTS, toFewPoints, params, null, null);
-        assertFalse(falseDecide.compute_lic_3(), "Should return false when less than three points are provided.");
+        Point[] points = new Point[] {
+            new Point(0, 0),  // p[0]
+            new Point(2, 0),  // p[1]
+            new Point(0, 2),  // p[2] -> area = 2 > 1
+            new Point(1, 1),  // p[3]
+            new Point(3, 3)   // p[4]
+        };
+        Declarations dec = new Declarations(numPoints, points, params, null, null);
 
-        //Should return false when area is negative.
-        params.AREA1 = -1.0;
-        NUMPOINTS = 3;
-        Point[] negativePoints = new Point[] {new Point(0, 0),new Point(1, 0), new Point(0, 1)};
-        Declarations negativeArea = new Declarations(NUMPOINTS, negativePoints, params, null, null);
-        assertFalse(negativeArea.compute_lic_3(), "Should return false when less than three points are provided.");
+        // Verify
+        assertTrue(dec.compute_lic_3(), "Should return true because (p[0], p[1], p[2]) form a triangle with area = 2 > 1.");
+    }
 
-        // Should return false when the triangle is degenerate. 
-        params.AREA1 = 1;
-        NUMPOINTS = 4;
-        Point[] degenPoints = new Point[] {new Point(0, 0), new Point(1, 1), new Point(2, 2), new Point(3, 3)};
-        Declarations degenArea = new Declarations(NUMPOINTS, degenPoints, params, null, null);
-        assertFalse(degenArea.compute_lic_3(), "Should return false when AREA1 is zero but all triangles are degenerate.");
-    
+    /**
+     * Tests the “false” scenario:
+     * 1) If NUMPOINTS < 3, we automatically have no triplets, so return false.
+     * 2) If no consecutive triplet has area > AREA1, return false.
+     */
+    @Test
+    void testLic3False() {
+        // Case A: Fewer than 3 points
+        Parameters paramsFew = new Parameters();
+        paramsFew.AREA1 = 1.0;
+        Point[] fewPoints = new Point[] {
+            new Point(0, 0),
+            new Point(1, 1)
+        };
+        Declarations decFew = new Declarations(2, fewPoints, paramsFew, null, null);
+        assertFalse(decFew.compute_lic_3(),"Should return false when fewer than 3 points are provided.");
 
-        // Shoule return false when there is no triangle with area greater than AREA1.
-        params.AREA1 = 1.0;
-        NUMPOINTS = 5; 
-        Point[] points = new Point[] {new Point(0, 0),new Point(1, 0), new Point(1, 1),new Point(2, 1), new Point(3, 1)};
-        Declarations smallArea = new Declarations(NUMPOINTS, points, params, null, null);
-        assertFalse(smallArea.compute_lic_3(), "Should return false when no triangle has area greater than AREA1.");
-        
-        
+        // Case B: Three consecutive points that form a triangle with area <= AREA1
+        Parameters paramsSmall = new Parameters();
+        paramsSmall.AREA1 = 1.0;
+        int numPoints = 3;
+        Point[] smallAreaPoints = new Point[] {
+            new Point(0, 0),
+            new Point(1, 1),
+            new Point(2, 2)  // collinear => area = 0
+        };
+        Declarations decSmall = new Declarations(numPoints, smallAreaPoints, paramsSmall, null, null);
+        assertFalse( decSmall.compute_lic_3(), "Should return false when all consecutive triplets have area <= 1 (collinear => area=0)." );
 
     }
 
+    /**
+     * Tests “invalid input” according to the contract:
+     * - AREA1 must satisfy 0 ≤ AREA1. If AREA1 < 0, the function returns false.
+     */
+    @Test
+    void testLic3InvalidInput() {
+        Parameters invalidParams = new Parameters();
+        invalidParams.AREA1 = -1.0; // invalid
+        int numPoints = 3;
+
+        Point[] points = new Point[] {
+            new Point(0, 0),
+            new Point(2, 0),
+            new Point(0, 2)
+        };
+
+        Declarations dec = new Declarations(numPoints, points, invalidParams, null, null);
+
+        // Assertion verifying the contract:
+        // "Should return false because AREA1 < 0 is invalid."
+        assertFalse(dec.compute_lic_3(),"Should return false for invalid (negative) AREA1.");
+    }
+
+//-------------------------------------------------------------------
 
     /*
      * Function for testing if LIC11 returns the correct boolean value.   
