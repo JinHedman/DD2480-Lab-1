@@ -188,6 +188,32 @@ class DecideTest {
         Declarations collinearDecide = new Declarations(NUMPOINTS, collinearPoints, params, null, null);
         assertFalse(collinearDecide.compute_lic_9(), "LIC9 should return false for collinear points");
     }
+  
+  
+    /*
+     * Function for testing if LIC8 is true, which means testing if there exists at least one set of three data points separated by exactly A_PTS 
+     * and B_PTS consecutive intervening points, respectively, that cannot be contained within or on a circle of radius RADIUS1.
+     */
+    @Test
+    void testLic8True(){
+        Parameters params = new Parameters();
+        params.A_PTS= 1;
+        params.B_PTS= 1;
+        params.RADIUS1 = 2.0;
+        int NUMPOINTS = 5;
+        
+        Point[] points = new Point[] {new Point(0, 0), new Point(1, 0), new Point(2, 0), new Point(3, 0), new Point(5, 0)};     
+        
+        Declarations trueDecide = new Declarations(NUMPOINTS, points, params, null, null);
+        assertTrue(trueDecide.compute_lic_8());
+
+        Point[] falsePoints = new Point[] {new Point(0, 0), new Point(1, 1), new Point(2, 2), new Point(3, 0), new Point(4, 0)};     
+        
+        Declarations falseDecide = new Declarations(NUMPOINTS, falsePoints, params, null, null);
+        assertFalse(falseDecide.compute_lic_8());
+
+
+    }
 
     
       /*

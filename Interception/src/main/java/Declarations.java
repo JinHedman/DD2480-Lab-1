@@ -117,6 +117,24 @@ public class Declarations {
     }
 
 
+    public boolean compute_lic_8() {
+        for (int i = 0; i < NUMPOINTS - (params.A_PTS + 1) - (params.B_PTS + 1); i++) {
+            Point a = points[i];
+            Point b = points[i + (params.A_PTS + 1)];
+            Point c = points[i + (params.A_PTS + 1) + (params.B_PTS + 1)];
+            System.out.println("Distance from a to b: " + a.distance(b));
+            System.out.println("Distance from a to c: " + a.distance(c));
+            System.out.println("Distance from b to c: " + b.distance(c));
+            if (a.distance(b) <= 2 * params.RADIUS1 &&
+                a.distance(c) <= 2 * params.RADIUS1 &&
+                b.distance(c) <= 2 * params.RADIUS1) {
+                return false;
+            }
+        }
+        return true;
+    }
+  
+
     // Need to return the smallest possible circle 
     public boolean compute_lic_1(){
         for(int i = 2; i< NUMPOINTS; i++){
