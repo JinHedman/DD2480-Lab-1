@@ -628,9 +628,8 @@ public class Declarations {
     /* 
     * Computes FUV based on PUM and PUV
     */
-    public boolean[] genFUV(boolean[][] PUM, boolean[] PUV){
+    public void genFUV(boolean[][] PUM, boolean[] PUV){
         int size = PUV.length;
-        boolean[] FUV = new boolean[size];
         // if PUV[i] is false, set FUV[i] to true
         for(int i=0;i<size;i++){
             if(!PUV[i]){
@@ -648,7 +647,12 @@ public class Declarations {
                 FUV[i] = rowTrue;
             }
         }
+    }
+
+    //getter function for FUV
+    public boolean[] getFUV(){
         return FUV;
+    }
     // getter function for pu
     public boolean[]  getCMV(){
         return CMV;
