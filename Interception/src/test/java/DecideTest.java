@@ -399,66 +399,123 @@ class DecideTest {
     }
 
 
-    /*
-     * Function for testing if LIC4 returns the correct boolean values.
-     * Returns true when a set of Q_pts lies in more than QUADS quadrants.
-     * Returns false when Q_Pts is less than two
+
+
+//------------------------ LIC4 ---------------------------------------
+
+
+    /**
+     * Tests the “true” scenario:
+     * There is at least one consecutive block of Q_PTS points covering more than QUADS quadrants.
      */
-    @Test 
-    void testLic4(){
+    @Test
+    void testLic4True() {
         Parameters params = new Parameters();
-
-        // Should return true when a set of Q_pts lies in more than Quads quadrants
         params.Q_PTS = 3;
         params.QUADS = 2;
-        int NUMPOINTS = 5;
-        // Points covering Quadrants I, II, III
-        Point[] truePoints = new Point[]{new Point(1, 1), new Point(-1, 1), new Point(-1, -1),  new Point(1, -1),  new Point(2, 2)};
-        Declarations trueDecide = new Declarations(NUMPOINTS, truePoints, params, null, null);
-        assertTrue(trueDecide.compute_lic_4(), "Should return true when a set of Q_PTS points lies in more than QUADS quadrants");
-
-        // Should return false when Q_pts is less than two. 
-        params.Q_PTS = 1; 
-        params.QUADS = 1;
-        // Can use the same points
-        Declarations lessQ_pts = new Declarations(NUMPOINTS, truePoints, params, null, null);
-        assertFalse(lessQ_pts.compute_lic_4(),"Should return false when Q_PTS < 2");
-    
-        // Should return false when Q_pts is greater than NUMPOINTS.
-        params.Q_PTS = 6;
-        params.QUADS = 2;
-        Declarations tooGreatQ_points = new Declarations(NUMPOINTS, truePoints, params, null, null);
-        assertFalse(tooGreatQ_points.compute_lic_4(),"Should return false when Q_PTS > NUMPOINTS");
-        
-        // Should return false when QUADS is less than 1. 
-        params.QUADS = 0; // invalid
-        Declarations tooSmallQuads = new Declarations(NUMPOINTS, truePoints, params, null, null);
-        assertFalse(tooSmallQuads.compute_lic_4(),
-        "Should return false when QUADS < 1");
-
-        // Should return false when QUADS is greater than 3.
-        params.QUADS = 4; // invalid
-        NUMPOINTS = 5;
-        Declarations tooLargeQuads = new Declarations(NUMPOINTS, truePoints, params, null, null);
-        assertFalse(tooLargeQuads.compute_lic_4(),"Should return false when QUADS > 3");
-
-        // Should return false when no set of Q_pts lie in more than QUADS quadrants. 
-        params.Q_PTS = 3;
-        params.QUADS = 2;
-        // All points lie in Quadrant I and II only
-        Point[] falsePoints = new Point[]{
-                new Point(1, 1),   // I
-                new Point(-1, 1),  // II
-                new Point(2, 2),   // I
-                new Point(-2, 1),  // II
-                new Point(3, 3)    // I
+        Point[] points = new Point[] {
+            new Point(1, 1),    // Quadrant I
+            new Point(-1, 1),   // Quadrant II
+            new Point(-1, -1),  // Quadrant III
+            new Point(1, -1),   // Quadrant IV
+            new Point(2, 2)     // Quadrant I
         };
-        Declarations falseCase = new Declarations(NUMPOINTS, falsePoints, params, null, null);
-         assertFalse(falseCase.compute_lic_4(),
-                "Should return false when no set of Q_PTS points lies in more than QUADS quadrants");
 
+        int numPoints = points.length;
+        Declarations dec = new Declarations(numPoints, points, params, null, null);
+
+        assertTrue( dec.compute_lic_4(),"Expected true because at least one set of Q_PTS=3 points spans more than QUADS=2 quadrants.");
     }
-  
+
+    /**
+     * Tests the “false” scenario:
+     * 1) We cannot form any sub-list of length Q_PTS if Q_PTS > NUMPOINTS → false.
+     * 2) If no consecutive group of size Q_PTS covers more than QUADS quadrants → false.
+     */
+    @Test
+    void testLic4False() {
+        // Case A: Q_PTS > NUMPOINTS
+        Parameters paramsA = new Parameters();
+        paramsA.Q_PTS = 6;  // Larger than the actual number of points
+        paramsA.QUADS = 2;
+
+        Point[] fewPoints = {
+            new Point(1, 1),
+            new Point(2, 2),
+            new Point(3, 3),
+            new Point(4, 4),
+            new Point(5, 5)
+        };
+        Declarations decA = new Declarations(fewPoints.length, fewPoints, paramsA, null, null);
+        assertFalse(  decA.compute_lic_4(),  "Should return false when Q_PTS=6 but we only have 5 points (cannot form a sub-list of 6).");
+
+        // Case B: Enough points, but no sub-list of length Q_PTS covers > QUADS quadrants.
+        // We want Q_PTS=3, QUADS=2, but all points only fall into Quadrants I and II.
+        Parameters paramsB = new Parameters();
+        paramsB.Q_PTS = 3;
+        paramsB.QUADS = 2;
+
+        Point[] pointsB = new Point[] {
+            new Point(1, 1),
+            new Point(-1, 2),
+            new Point(-2, 5),
+            new Point(2, 3),
+            new Point(3, 5)
+        };
+        Declarations decB = new Declarations(pointsB.length, pointsB, paramsB, null, null);
+
+        assertFalse(decB.compute_lic_4(), "Should return false because no sub-list of 3 points covers more than 2 quadrants." );
+    }
+
+    /**
+     * Tests “invalid input” according to the contract:
+     * - Q_PTS must be at least 2 and at most NUMPOINTS.
+     * - QUADS must be between 1 and 3 inclusive.
+     */
+    @Test
+    void testLic4InvalidInput() {
+        // Case A: Q_PTS < 2
+        Parameters params1 = new Parameters();
+        params1.Q_PTS = 1;   // Invalid, must be at least 2
+        params1.QUADS = 2;
+        Point[] points1 = {
+            new Point(0, 0),
+            new Point(1, 1)
+        };
+        Declarations dec1 = new Declarations(2, points1, params1, null, null);
+        assertFalse( dec1.compute_lic_4(),
+            "Should return false when Q_PTS < 2 (invalid)."
+        );
+
+        // Case B: QUADS < 1
+        Parameters params2 = new Parameters();
+        params2.Q_PTS = 2;
+        params2.QUADS = 0;  // Invalid, must be >= 1
+        Point[] points2 = {
+            new Point(1, 1),
+            new Point(2, 2),
+            new Point(3, 3)
+        };
+        Declarations dec2 = new Declarations(3, points2, params2, null, null);
+        assertFalse(  dec2.compute_lic_4(),  "Should return false when QUADS < 1 (invalid).");
+
+        // Case C: QUADS > 3
+        Parameters params3 = new Parameters();
+        params3.Q_PTS = 3;
+        params3.QUADS = 4;  // Invalid, must be <= 3
+        Point[] points3 = {
+            new Point(1, 1),
+            new Point(2, 2),
+            new Point(3, 3)
+        };
+        Declarations dec3 = new Declarations(3, points3, params3, null, null);
+        assertFalse(
+            dec3.compute_lic_4(),
+            "Should return false when QUADS > 3 (invalid)."
+        );
+    }
+
+ 
 
 
 //------------------------ LIC3 ---------------------------------------
