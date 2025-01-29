@@ -424,6 +424,73 @@ class DecideTest {
    
 
     /*
+     * Function for testing LIC13 returns expected value for the given instances.
+     */
+    @Test
+    void testLic13() {
+        Parameters params = new Parameters();
+        params.A_PTS = 1;
+        params.B_PTS = 1;
+        params.RADIUS1 = 1.5;
+        params.RADIUS2 = 2.5;
+        int NUMPOINTS = 5;
+
+        // Test case where a triplet meets both conditions (radius > RADIUS1 and <= RADIUS2)
+        Point[] pointsTrue = new Point[] {
+            new Point(0, 0),
+            new Point(1, 1),
+            new Point(4, 0),
+            new Point(3, 3),
+            new Point(7, 0)
+        };
+        Declarations decideTrue = new Declarations(NUMPOINTS, pointsTrue, params, null, null);
+        assertTrue(decideTrue.compute_lic_13());
+
+        // Test case where no triplet meets both conditions
+        params.RADIUS1 = 3.0;
+        params.RADIUS2 = 1.0;
+        Declarations decideFalse = new Declarations(NUMPOINTS, pointsTrue, params, null, null);
+        assertFalse(decideFalse.compute_lic_13());
+
+        // Test case with insufficient points (NUMPOINTS < 5)
+        int smallNumPoints = 4;
+        Point[] smallPoints = new Point[4];
+        for (int i = 0; i < smallNumPoints; i++) {
+            smallPoints[i] = new Point(i, i);
+        }
+        Declarations decideSmall = new Declarations(smallNumPoints, smallPoints, params, null, null);
+        assertFalse(decideSmall.compute_lic_13());
+
+        // Test case where maxI is negative (A_PTS and B_PTS too large)
+        params.A_PTS = 3;
+        params.B_PTS = 3;
+        int numPoints = 5;
+        Point[] maxIPoints = new Point[numPoints];
+        for (int i = 0; i < numPoints; i++) {
+            maxIPoints[i] = new Point(i, i);
+        }
+        Declarations decideMaxI = new Declarations(numPoints, maxIPoints, params, null, null);
+        assertFalse(decideMaxI.compute_lic_13());
+
+        // Test case with two triplets: one meets condition1, the other condition2
+        params.A_PTS = 1;
+        params.B_PTS = 1;
+        params.RADIUS1 = 3.0;
+        params.RADIUS2 = 1.0;
+        int numPointsTwo = 6;
+        Point[] pointsTwo = new Point[] {
+            new Point(0, 0),
+            new Point(0, 1),
+            new Point(8, 0),
+            new Point(0, 3),
+            new Point(8, 0),
+            new Point(0, 5)
+        };
+        Declarations decideTwo = new Declarations(numPointsTwo, pointsTwo, params, null, null);
+        assertTrue(decideTwo.compute_lic_13());
+    }
+
+    /*
      * Function for testing if LIC10 is true, which means testing if there exists at least one set of three data points separated by exactly E_PTS 
      * and F_PTS consecutive intervening points, respectively, that are the vertices of a triangle with area greater than AREA1.
      */
@@ -449,7 +516,7 @@ class DecideTest {
 
 
     
-      /*
+    /*
      * Function for testing if LIC7 works correctly. It tests cases where NUMPOINTS < 3,
      * cases where the condition is met, and cases where the condition is not met.
      */

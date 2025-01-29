@@ -1,5 +1,6 @@
 package Interception.src.main.java;
 
+import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -461,6 +462,79 @@ public class Declarations {
         }
         return false;
 
+    }
+
+    /*
+     *  Computes LIC13, returns true if there are three consequtive points with A_PTS and B_PTS between, respectively, outside RADIUS1
+     *  and if there are three consequtive points with A_PTS and B_PTS between, respectively, inside or on RADIUS2.
+     */
+    public boolean compute_lic_13() {
+        if (NUMPOINTS < 5) {
+            return false;
+        }
+        
+        int maxI = NUMPOINTS - (params.A_PTS + params.B_PTS + 3);
+
+        if (maxI < 0) {
+            return false;
+        }
+        
+        boolean condition1 = false;
+        boolean condition2 = false;
+        
+        for (int i = 0; i <= maxI; i++) {
+            int j = i + params.A_PTS + 1;
+            int k = j + params.B_PTS + 1;
+            
+            double diff_ij = points[i].distance(points[j]);
+            double diff_ik = points[j].distance(points[k]);
+            double diff_jk = points[k].distance(points[k]);
+            
+            // Find longest side 'c' and other sides 'a' and 'b'
+            double a, b, c;
+            if (diff_ij >= diff_ik && diff_ij >= diff_jk) {
+                c = diff_ij;
+                a = diff_ik;
+                b = diff_jk;
+            } else if (diff_ik >= diff_ij && diff_ik >= diff_jk) {
+                c = diff_ik;
+                a = diff_ij;
+                b = diff_jk;
+            } else {
+                c = diff_jk;
+                a = diff_ij;
+                b = diff_ik;
+            }
+            
+            double radius;
+            if (c == 0) {
+                radius = 0;  // All points are identical
+            } else {
+                double area = heronsRule(a, b, c);
+                
+                if (Double.isNaN(area) || area <= 1e-12) {  // Collinear case
+                    radius = c / 2;
+                } else if (c * c > a * a + b * b + 1e-12) {  // Obtuse triangle
+                    radius = c / 2;
+                } else {  // Acute triangle (use circumradius)
+                    radius = (a * b * c) / (4 * area);
+                }
+            }
+            
+            if (radius > params.RADIUS1) {
+                condition1 = true;
+            }
+            if (radius <= params.RADIUS2) {
+                condition2 = true;
+            }
+            
+            if (condition1 && condition2) {
+                return true;
+            } 
+                
+        }
+        
+        return condition1 && condition2;
     }
 
 
