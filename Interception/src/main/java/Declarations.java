@@ -62,6 +62,46 @@ public class Declarations {
         this.LCM = LCM;
         this.PUV = PUV;
     } 
+  
+
+    /*
+     * Code for the assertion that there exists two points that are K_PTS apart and atleast one of them have
+     * distance greater than LENGTH1 and atleast one of them have distance smaller than LENGTH2
+     */
+    public boolean compute_lic_12() {
+        if (NUMPOINTS < 3) {
+            return false;
+        }
+        if (params.K_PTS <= 0) {
+            return false;
+        }
+        if (params.LENGTH2 < 0) {
+            return false;
+        }
+        // Calculate the maximum index i such that i + K_PTS + 1 < numPoints
+        int maxI = NUMPOINTS - params.K_PTS - 2;
+        if (maxI < 0) {
+            return false; // No valid pairs possible
+        }
+        boolean part1 = false;
+        boolean part2 = false;
+        for (int i = 0; i <= maxI; i++) {
+            int j = i + params.K_PTS + 1;
+            double dx = points[j].getX() - points[i].getX();
+            double dy = points[j].getY() - points[i].getY();
+            double distance = Math.sqrt(dx * dx + dy * dy);
+            if (distance > params.LENGTH1) {
+                part1 = true;
+            }
+            if (distance < params.LENGTH2) {
+                part2 = true;
+            }
+            if (part1 && part2) {
+                break;
+            }
+        }
+        return part1 && part2;
+    }
 
 
     /*
@@ -75,6 +115,7 @@ public class Declarations {
         }
         return false;
     }
+
 
     // Need to return the smallest possible circle 
     public boolean compute_lic_1(){
@@ -125,6 +166,57 @@ public class Declarations {
         }
         return false; 
     }
+    /*
+     * Code for asserting if the distance between two points are greater than LENGTH1
+     */
+    public boolean compute_lic_7(){
+        // the number of numpoints are too few
+        if(NUMPOINTS < 3){
+            return false;
+        }
+        for(int i = 0; i <= NUMPOINTS-params.K_PTS-2;i++){
+            int j = i + params.K_PTS+1;
+            // out of bounds check
+            if(j>=NUMPOINTS){
+                continue;
+            }
+            if(points[i].distance(points[j])>params.LENGTH1){
+                return true;
+            }  
+        }
+        // no pair fits the condition
+        return false; 
+    }
+
+    public boolean compute_lic_2(){
+            double EPS = params.EPSILON;      
+            if (NUMPOINTS < 3) return false;
+            for (int i = 1; i < NUMPOINTS - 1; i++) {
+                Point p1 = points[i - 1];
+                Point p2 = points[i];    
+                Point p3 = points[i + 1];
+                // Skip if p2 coincides with p1 or p2 coincides with p3 => angle undefined
+                if ((p2.getX() == p1.getX() && p2.getY() == p1.getY()) ||
+                    (p2.getX() == p3.getX() && p2.getY() == p3.getY())) {
+                    continue;
+                }
+                double b = p1.distance(p2);  
+                double a = p2.distance(p3);  
+                double c = p1.distance(p3);  
+                double cosVal = (a*a + b*b - c*c) / (2.0 * a * b);            
+                // Clamp cosVal to [-1, 1]
+              //  if (cosVal > 1.0) {   cosVal = 1.0;}
+               // if (cosVal < -1.0) { cosVal = -1.0;}
+        
+                double angle = Math.acos(cosVal);
+ 
+                if (angle < (PI - EPS) || angle > (PI + EPS)) {
+                    return true;
+                }
+            }        
+            return false;
+    }
+
 
     /*
      * LIC 9
