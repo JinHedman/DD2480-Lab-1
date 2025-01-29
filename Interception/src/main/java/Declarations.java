@@ -145,6 +145,9 @@ public class Declarations {
      * Code for the assertion that two consequitive points are a 
      */
     public boolean compute_lic_0(){
+        if(NUMPOINTS < 2 || params.LENGTH1 < 0){
+            return false; 
+        }
         for(int i=1; i < NUMPOINTS; i++){
             if(points[i].distance(points[i-1]) > params.LENGTH1){
                 return true;
@@ -649,6 +652,7 @@ public class Declarations {
             }
         }
         return FUV;
+    }
     // getter function for pu
     public boolean[]  getCMV(){
         return CMV;

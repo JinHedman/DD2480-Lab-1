@@ -107,31 +107,97 @@ class DecideTest {
 
     
 
-    /*
-     * Function for testing if LIC0 is true, which means testing if there are two points at a distance greater than length LENGTH1 from each other. 
-     * It also tests if LIC0 returns false when it is supposed to, which is when there are no consequtive points at a distance greater than 
-     * LENGTH1 from each other. 
-     */ 
+   /*
+    * 
+    * 
+    */
+
+
+
+//------------------------LIC0 TESTS---------------------------------------
+
+    /**
+     * Test for the “true” scenario under the contract:
+     * There is at least one pair of consecutive points whose distance > LENGTH1.
+     */
     @Test
-    void testLic0True(){
+    void testLic0True() {
+        // Setup
         Parameters params = new Parameters();
         params.LENGTH1 = 3; 
-        int NUMPOINTS = 3;
-        
-        Point[] points = new Point[] {new Point(1, 5), new Point(5, 4), new Point(5, 6) };     
-        
-        Declarations trueDecide = new Declarations(NUMPOINTS, points, params, null, null);
-       
-        assertTrue(trueDecide.compute_lic_0());
+        int numPoints = 3;
 
-        Point[] falsePoints = new Point[] {new Point(1, 2), new Point(2, 3), new Point(3, 4) };     
-        
-        Declarations falseDecide = new Declarations(NUMPOINTS, falsePoints, params, null, null);
-        assertFalse(falseDecide.compute_lic_0());
+        // Points (1,5) -> (5,4) are > 3 units apart (distance ~ 4.12)
+        Point[] points = new Point[] {
+            new Point(1, 5),
+            new Point(5, 4),
+            new Point(5, 6)
+        };
 
+        Declarations dec = new Declarations(numPoints, points, params, null, null);
 
+        // Assertion verifying the contract:
+        // "Expected true because at least one consecutive pair of points is
+        //  more than 3 units apart."
+        assertTrue(  dec.compute_lic_0(), "Should return true when a consecutive pair exceeds LENGTH1.");
     }
+
+    /**
+     * Test for the “false” scenario under the contract:
+     * 1) Either no consecutive pair is greater than LENGTH1,
+     *    or 2) We have fewer than 2 points.
+     */
+    @Test
+    void testLic0False() {
+        // Setup
+        Parameters params = new Parameters();
+        params.LENGTH1 = 3; 
+        int numPoints = 3;
+
+        // All distances <= 3
+        Point[] points = new Point[] {
+            new Point(1, 2),
+            new Point(2, 3),
+            new Point(3, 4)
+        };
+        Declarations dec = new Declarations(numPoints, points, params, null, null);
+
+        // Assertion verifying the contract:
+        // "Should be false because no pair of consecutive points is more
+        //  than 3 units apart."
+        assertFalse(dec.compute_lic_0(),
+            "Should return false when no consecutive pair exceeds LENGTH1."
+        );
+
+        // If we have fewer than 2 points should it return false.
+        int fewPointsCount = 1;
+        Point[] singlePointArray = new Point[] {new Point(0, 0)  };
+        Declarations decFew = new Declarations(fewPointsCount, singlePointArray, params, null, null);
+        assertFalse( decFew.compute_lic_0(),"Should return false when NUMPOINTS < 2 (no consecutive points).");
+    }
+
+    /**
+     * Test for “invalid input” according to the contract:
+     * LENGTH1 must satisfy 0 ≤ LENGTH1. If LENGTH1 < 0, we expect false.
+     */
+    @Test
+    void testLic0InvalidInput() {
+        Parameters params = new Parameters();
+        params.LENGTH1 = -1; 
+        int numPoints = 3;
+        Point[] points = new Point[] {
+            new Point(1, 2),
+            new Point(2, 3),
+            new Point(3, 4)
+        };
+        Declarations dec = new Declarations(numPoints, points, params, null, null);
+
+        assertFalse(dec.compute_lic_0(), "Should return false for invalid (negative) LENGTH1.");
+    }
+
+
   
+//------------------------------------------------------------------
   
     /*
      * Function for testing if LIC6 is true, which means testing if there exists at least one set of N_PTS consecutive data points such that at 
