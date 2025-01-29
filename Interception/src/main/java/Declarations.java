@@ -126,6 +126,23 @@ public class Declarations {
         return false; 
     }
 
+    /*
+     * Code for LIC5.
+     */
+    public boolean compute_lic_5(){
+        // If NUMPOINTS is less than two should it fail.
+        if(NUMPOINTS < 2){
+            return false; 
+        }
+        for(int i=1; i < NUMPOINTS; i++){
+            if( ((points[i]).getX() - points[i-1].getX()) < 0) { 
+                return true;
+            }
+        }
+        return false;
+
+    }
+
 
     /*
      * Help function for calculating the area of a triangle given its three sides.
