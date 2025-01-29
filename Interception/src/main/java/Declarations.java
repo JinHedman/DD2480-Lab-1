@@ -653,9 +653,13 @@ public class Declarations {
     public boolean[] getFUV(){
         return FUV;
     }
-    // getter function for pu
+    // getter function for CMV
     public boolean[]  getCMV(){
         return CMV;
+    }
+    // getter function for PUV
+    public boolean[] getPUV() {
+        return PUV;
     }
 
     // test code
