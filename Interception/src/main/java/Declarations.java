@@ -305,7 +305,12 @@ public class Declarations {
       }
 
     public boolean compute_lic_2(){
-            double EPS = params.EPSILON;      
+            double EPS = params.EPSILON;
+            
+            if(EPS < 0 || EPS > PI){
+                return false;
+            }
+            
             if (NUMPOINTS < 3) return false;
             for (int i = 1; i < NUMPOINTS - 1; i++) {
                 Point p1 = points[i - 1];

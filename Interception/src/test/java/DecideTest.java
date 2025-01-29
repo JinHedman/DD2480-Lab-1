@@ -709,36 +709,99 @@ class DecideTest {
     }    
   
 
-    /*
-     * Function for testing if LIC2 works as expected.
-     * Returns true when the angle is less then PI minus epsilon or greater then PI + epsilon.
-     * Returns false when the number of points is less than three, the points are colinear or when points coincide.
+//-----------------------LIC2---------------------------------------------------------
+
+    /**
+     * Tests the “true” branch of the contract:
+     * - We have at least 3 consecutive points forming an angle
+     *   that is strictly less than (π - EPSILON) OR strictly greater than (π + EPSILON).
      */
-    @Test 
-    void testLic2() {
-        // 1) Should return true if the angle at p2 is acute => angle < PI - EPS.
-        Point[] points = new Point[] { new Point(0,0), new Point(1,0), new Point(2,1) };
-        Parameters testParam = new Parameters();
-        testParam.EPSILON = 0.1;  // a small epsilon
-        Declarations dec = new Declarations(3, points, testParam, null, null);
-        assertTrue(dec.compute_lic_2(),
-            "Expected true because the angle at p2 is acute, so angle < PI - EPS.");
-    
-        // 2) Only 2 points => cannot form a triple => should return false
-        Point[] pts = new Point[] { new Point(0,0), new Point(1,1) };
-        Parameters paramsFalse = new Parameters();
-        paramsFalse.EPSILON = 0.5;  
-        Declarations declarations = new Declarations(2, pts, paramsFalse, null, null);
-        assertFalse(declarations.compute_lic_2(),
-            "Should return false if there are fewer than 3 points.");
-    
-        // 3) Three consecutive collinear points => angle at middle = PI => expect false
-        Point[] pointColinear = new Point[] { new Point(0,0), new Point(1,0), new Point(2,0) };
-        Parameters paramsColinear = new Parameters();
-        paramsColinear.EPSILON = 0.1;  // must set on paramsColinear
-        Declarations decColinear = new Declarations(3, pointColinear, paramsColinear, null, null);
-    
-        assertFalse(decColinear.compute_lic_2(),
-            "Angle is exactly PI => not < PI - EPS, not > PI + EPS => should be false.");
-    } 
+    @Test
+    void testLIC2True() {
+        
+        Point[] points = new Point[] {
+            new Point(0, 0),
+            new Point(1, 0),
+            new Point(2, 1)
+        };
+        Parameters params = new Parameters();
+        params.EPSILON = 0.1; // small enough so that angle < (π - 0.1)
+
+        Declarations dec = new Declarations(3, points, params, null, null);
+
+        // Assertion verifying the contract:
+        // "Expected true because the angle at (1,0) is acute (i.e. < π - 0.1)."
+        assertTrue(dec.compute_lic_2(), "Should return true for an acute angle < (π - EPSILON)."
+        );
+    }
+
+    /**
+     * Tests the “false” branch of the contract:
+     * - Case A: NUMPOINTS < 3 → cannot possibly satisfy the condition.
+     * - Case B: Three collinear points → angle is exactly π, which is
+     *   neither < (π - EPSILON) nor > (π + EPSILON).
+     */
+    @Test
+    void testLIC2False() {
+        // Case A: Only 2 points
+        Point[] twoPoints = new Point[] {
+            new Point(0, 0),
+            new Point(1, 1)
+        };
+        Parameters paramsFew = new Parameters();
+        paramsFew.EPSILON = 0.5;
+        Declarations decFew = new Declarations(2, twoPoints, paramsFew, null, null);
+
+        // Assertion verifying the contract:
+        // "Should return false if there are fewer than 3 points."
+        assertFalse(decFew.compute_lic_2(), "Expected false due to insufficient points (no triple).");
+
+        // Case B: Three collinear points → angle is π
+        Point[] collinearPoints = new Point[] {
+            new Point(0, 0),
+            new Point(1, 0),
+            new Point(2, 0)
+        };
+        Parameters paramsCollinear = new Parameters();
+        paramsCollinear.EPSILON = 0.1;
+
+        Declarations decCollinear = new Declarations(3, collinearPoints, paramsCollinear, null, null);
+
+        // Assertion verifying the contract:
+        // "Angle == π => does not satisfy < (π - EPSILON) or > (π + EPSILON)."
+        assertFalse(decCollinear.compute_lic_2(),"Should return false for collinear points (angle = π)." );
+    }
+
+    /**
+     * Tests “invalid input” according to the contract:
+     * - The parameter EPSILON must satisfy 0 ≤ EPSILON < π.
+     * - If EPSILON < 0 or EPSILON ≥ π, we treat it as invalid and expect false.
+     */
+    @Test
+    void testLIC2InvalidInput() {
+        Point[] points = {
+            new Point(0, 0),
+            new Point(1, 0),
+            new Point(2, 1)
+        };
+
+        // EPSILON < 0 => invalid
+        Parameters invalidParams1 = new Parameters();
+        invalidParams1.EPSILON = -0.1;
+        Declarations decInvalid1 = new Declarations(3, points, invalidParams1, null, null);
+        assertFalse(
+            decInvalid1.compute_lic_2(),
+            "Should return false because EPSILON < 0 is invalid input."
+        );
+
+        // EPSILON >= π => invalid
+        Parameters invalidParams2 = new Parameters();
+        invalidParams2.EPSILON = Math.PI; // π itself is not allowed
+        Declarations decInvalid2 = new Declarations(3, points, invalidParams2, null, null);
+        assertFalse(
+            decInvalid2.compute_lic_2(),
+            "Should return false because EPSILON >= π is invalid input."
+        );
+    }
+
 }
