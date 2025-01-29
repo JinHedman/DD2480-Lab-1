@@ -66,5 +66,32 @@ class DecideTest {
 
     }
    
+    /*
+     * Function for testing if LIC14 is true, which means testing if there exists at least one set of three data points, separated by exactly
+     * E_PTS and F_PTS consecutive intervening points, respectively, that are the vertices of a triangle with area greater than AREA1. 
+     * In addition, there exist three data points (which can be the same or different from the three data points just mentioned) separated by 
+     * exactly E_PTS and F_PTS consecutive intervening points, respectively, that are the vertices of a triangle with area less than AREA2. 
+     * Both parts must be true for the LIC to be true.
+     */
+    @Test
+    void testLic14True(){
+        Parameters params = new Parameters();
+        params.E_PTS= 1;
+        params.F_PTS= 1;
+        params.AREA1 = 2.0;
+        params.AREA2 = 8.0;
+        int NUMPOINTS = 5;
+        
+        Point[] points = new Point[] {new Point(0, 0), new Point(1, 1), new Point(3, 0), new Point(2, 2), new Point(0, 4)};     
+        
+        Declarations trueDecide = new Declarations(NUMPOINTS, points, params, null, null);
+        assertTrue(trueDecide.compute_lic_14());
+
+        Point[] falsePoints = new Point[] {new Point(0, 0), new Point(1, 1), new Point(0, 10), new Point(2, 2), new Point(2, 0)};     
+        
+        Declarations falseDecide = new Declarations(NUMPOINTS, falsePoints, params, null, null);
+        assertFalse(falseDecide.compute_lic_14());
+
+    }
     
 }
