@@ -271,6 +271,41 @@ public class Declarations {
         return false;
     }
 
+    
+
+    public boolean compute_lic_3(){
+        if(params.AREA1 < 0){
+            return false;
+        }
+        // Need to have at least three different points.
+        if(points.length < 3){
+            return false; 
+        }
+        for(int i = 2; i< points.length; i++){
+                double a = points[i-2].distance(points[i]);  
+                double b = points[i-1].distance(points[i]);           
+                double c = points[i-1].distance(points[i-2]);  
+    
+                if(isValidTriangle(a,b,c)){
+                    double Area = heronsRule(a,b,c); 
+                    if (Area > params.AREA1){
+                        return true; 
+                    }
+                }
+            }
+        return false;     
+    }
+
+
+    
+
+    /*
+     * Helper function to determine if it is a valid triangle with the triangle inequality.
+     * 
+     */
+    private boolean isValidTriangle(double a, double b, double c){
+        return (a + b > c) && (a + c > b) && (b + c > a);
+    }
 
     /*
      * LIC 9
