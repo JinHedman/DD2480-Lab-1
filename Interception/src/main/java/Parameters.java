@@ -16,6 +16,7 @@ public class Parameters {
     public int D_PTS; 
     public int E_PTS; 
     public int G_PTS; 
+    public int F_PTS;
     public double LENGTH2; 
     public double RADIUS2; 
     public double AREA2; 
