@@ -217,6 +217,28 @@ public class Declarations {
             return false;
     }
 
+    public boolean compute_lic_6() {
+        for (int i = 0; i <= points.length - params.N_PTS; i++) {
+            Point startPoint = points[i];
+            Point endPoint = points[i + params.N_PTS - 1];
+
+            for (int j = 1; j < params.N_PTS - 1; j++) {
+                Point currentPoint = points[i + j];
+                double distance;
+
+                if (startPoint == endPoint) {
+                    distance = startPoint.distance(currentPoint);
+                } else {
+                    distance = pointToLineDistance(startPoint, endPoint, currentPoint);
+                }
+                if (distance > params.DIST) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
     /*
      * LIC 9
@@ -269,6 +291,24 @@ public class Declarations {
     }
 
     /*
+     * Help function for calculating the distance from a given point, to a given straight line which goes through the start and endpoint.
+     */
+    private static double pointToLineDistance(Point lineStart, Point lineEnd, Point point) {
+        double x0 = point.getX(), y0 = point.getY();
+        double x1 = lineStart.getX(), y1 = lineStart.getY();
+        double x2 = lineEnd.getX(), y2 = lineEnd.getY();
+
+        double numerator = Math.abs((y2 - y1) * x0 - (x2 - x1) * y0 + x2 * y1 - y2 * x1);
+        double denominator = Math.sqrt(Math.pow(y2 - y1, 2) + Math.pow(x2 - x1, 2));
+
+        if (denominator == 0) {
+            return 0;
+        } else {
+            return numerator / denominator;
+        }
+    }
+
+    /* 
      * Help function for calculating the angle of three given dots using vector dot product.
      */
     private double calcAngle(Point A, Point B, Point C){
