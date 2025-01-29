@@ -68,6 +68,39 @@ public class Declarations {
     } 
   
 
+
+    /*
+     * Function for populating the pum matrix based on on the values in the 
+     * 
+     */
+    public boolean[][] compute_pum() {
+      
+        for (int i = 0; i < 15; i++) {
+            for (int j = 0; j < 15; j++) {
+                // Check for null values and return false 
+                if(LCM[i][j] == null){
+                    // can not return false so do a exception. 
+                    throw new NullPointerException("LCM contains null connector at LCM[" + i + "][" + j + "] or LCM[" + j + "][" + i + "].");
+                }
+                switch (LCM[i][j]) {
+                    case NOTUSED:
+                        PUM[i][j] = true;
+                        break;
+                    case ANDD:
+                        PUM[i][j] = CMV[i] && CMV[j];
+                        break;
+                    case ORR:
+                        PUM[i][j] = CMV[i] || CMV[j];
+                        break;
+                    default:
+                        // if there is an issue with the connectors do we return false.
+                        PUM[i][j] = false; 
+                }
+            }
+        }
+        return PUM;
+    }
+
     /*
      * Code for the assertion that there exists two points that are K_PTS apart and atleast one of them have
      * distance greater than LENGTH1 and atleast one of them have distance smaller than LENGTH2
@@ -592,6 +625,10 @@ public class Declarations {
         return Math.acos(cosThe);
     }
 
+    // getter function for pu
+    public boolean[]  getCMV(){
+        return CMV;
+    }
 
     // test code
     public static void main(String[] args) {
