@@ -125,7 +125,35 @@ public class Declarations {
         }
         return false; 
     }
+    /*
+     * Code to assert LIC11, if there exists two points seperated by G_PTS consecutive intervening points in bounds.
+     * And that NUMPOINTS < 3, 1<= G_PTS <= NUMPOINTS-2.
+    */
+    public boolean compute_lic_11(){
+        if(NUMPOINTS<3){
+            return false;
+        }
 
+        // asses G_PTS
+        if(params.G_PTS<1 || params.G_PTS>NUMPOINTS-2){
+            return false;
+        }
+
+        for(int i=0;i<=NUMPOINTS-params.G_PTS-2;i++){
+            // index for point which is G_PTS aways from point with index i 
+            int j = i+params.G_PTS+1;
+            // check bounds
+            if(j>=NUMPOINTS){
+                continue;
+            }
+
+            // check if points meet condtion
+            if(points[j].x<points[i].x){
+                return true;
+            }
+        }
+        return false;
+    }
 
     /*
      * Help function for calculating the area of a triangle given its three sides.

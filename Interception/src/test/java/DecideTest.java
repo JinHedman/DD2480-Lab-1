@@ -65,6 +65,37 @@ class DecideTest {
 
 
     }
-   
+
+    /*
+     * Function for testing if LIC11 returns the correct boolean value.   
+     * Returns true if there exist two points with exacly G_PTS consecutive intervening points such that X[j] - X[i] < 0. (where i < j ).
+     * Returns false if the condition is not met or if NUMPOINTS < 3, 1 ≤ G PTS ≤ NUMPOINTS−2.
+     */
+    @Test
+    void testLic11() {
+        Parameters params = new Parameters();
+        params.G_PTS = 1;
+        
+        int NUMPOINTS = 5;
+        Point[] points = new Point[] {
+            new Point(5, 1), 
+            new Point(4, 2),
+            new Point(3, 3),  
+            new Point(2, 4),  
+            new Point(1, 5)   
+        };
+        
+        // true case
+        Declarations decreasingXDecide = new Declarations(NUMPOINTS, points, params, null, null);
+        assertTrue(decreasingXDecide.compute_lic_11(), "LIC11 should return true");
+    
+        // false case
+        Point[] increasingXPoints = new Point[] {
+            new Point(1, 1), new Point(2, 2), new Point(3, 3), new Point(4, 4), new Point(5, 5)
+        };
+        Declarations increasingXDecide = new Declarations(NUMPOINTS, increasingXPoints, params, null, null);
+        assertFalse(increasingXDecide.compute_lic_11(), "LIC11 should return false");
+    }
+    
     
 }
