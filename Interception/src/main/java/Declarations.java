@@ -499,6 +499,16 @@ public class Declarations {
      */
     public boolean compute_lic_5(){
         // If NUMPOINTS is less than two should it fail.
+        if (points == null) {
+            return false;
+        }
+        // 4) Check for any null Point within the array
+        for (int i = 0; i < NUMPOINTS; i++) {
+        if (points[i] == null) {
+            return false;
+        }
+        }
+        
         if(NUMPOINTS < 2){
             return false; 
         }

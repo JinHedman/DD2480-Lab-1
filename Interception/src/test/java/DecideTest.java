@@ -363,41 +363,101 @@ class DecideTest {
     }
 
 
-    /*
-     * Function for testing if LIC5 returns the correct boolean value.
-     * Returns true when two consecutive points where the x coordinate of the second points is less then the x cordinte of the first point. 
-     * Returns false when NUMPOINTS is less than 2 or/and when it is not possible to find two consecutive points where the x coordinate of the second point
-     * is less than the x coordinate of the first points. 
+//----------------------- LIC5---------------------------------------
+
+
+    /**
+     * Test the “true” scenario:
+     *  - We have at least one pair of consecutive points where X[j] < X[i].
      */
     @Test
-    void testLic5(){
+    void testLic5True() {
         Parameters params = new Parameters();
-        int NUMPOINTS = 2; 
-        // should return when the condition is met with only two points. 
-        Point[] corrPoints = new Point[]{new Point(5, 5), new Point(3, 5)}; 
-        Declarations corrDecide = new Declarations(NUMPOINTS, corrPoints, params, null, null);
-        assertTrue(corrDecide.compute_lic_5(),"Should return true when a consecutive pair meets the condition.");
-  
+        // No special param needed for LIC5, unless your code does something else with them.
 
-        // Should also return true with more than two points where the conditions is not necessarily met by the first pair of points. 
-        NUMPOINTS = 4; 
-        Point[] fewTruePoints = new Point[]{new Point(1, 1),  new Point(3, 2),  new Point(2, 2), new Point(4, 4) };
-        Declarations fewCorrDecide = new Declarations(NUMPOINTS, fewTruePoints, params, null, null);
-        assertTrue(fewCorrDecide.compute_lic_5(),"Should return true when at least one consecutive pair meets the condition.");
+        // Example 1: Exactly 2 points, second has smaller x
+        int numPoints = 2;
+        Point[] points = new Point[] {
+            new Point(5, 5),  // p0.x = 5
+            new Point(3, 5)   // p1.x = 3 -> 3 < 5
+        };
+        Declarations dec = new Declarations(numPoints, points, params, null, null);
 
-        // should return false when the number of points is less than two.
-        NUMPOINTS = 1;
-        Point[] fewPoints = new Point[] {new Point(0, 0)}; 
-        Declarations fewPointsDecide = new Declarations(NUMPOINTS, fewPoints, params, null, null);
-        assertFalse(fewPointsDecide.compute_lic_5(),"Should return false when there are fewer than two points.");
+        assertTrue(
+            dec.compute_lic_5(),
+            "Should return true when second point's x < first point's x."
+        );
 
-        // should return false when there are no consecutive pairs meet the condition.
-        NUMPOINTS = 4;
-        Point[] falsePoints = new Point[]{ new Point(1, 1), new Point(2, 2),  new Point(3, 3), new Point(4, 4)};
-        Declarations falsePointsDecide = new Declarations(NUMPOINTS, falsePoints, params, null, null);
-        assertFalse(falsePointsDecide.compute_lic_5(),"Should return false when no consecutive pairs meet the condition.");
+        // Example 2: Multiple points, only one pair triggers the condition
+        int numPoints2 = 4;
+        Point[] points2 = new Point[] {
+            new Point(1, 1),  
+            new Point(3, 2),  
+            new Point(2, 2),  
+            new Point(4, 4)   
+        };
+        Declarations dec2 = new Declarations(numPoints2, points2, params, null, null);
+        assertTrue(
+            dec2.compute_lic_5(),
+            "Should return true when at least one consecutive pair has x[j] < x[i]."
+        );
     }
 
+    /**
+     * Test the “false” scenario:
+     * 1) If NUMPOINTS < 2 → no consecutive points → false.
+     * 2) If all consecutive pairs have x[j] >= x[i].
+     */
+    @Test
+    void testLic5False() {
+        Parameters params = new Parameters();
+
+        // Case A: Only 1 point => false
+        int numPoints = 1;
+        Point[] singlePoint = new Point[] {
+            new Point(0, 0)
+        };
+        Declarations decSingle = new Declarations(numPoints, singlePoint, params, null, null);
+        assertFalse(
+            decSingle.compute_lic_5(),
+            "Should return false when there's only 1 point (no consecutive pairs)."
+        );
+
+        // Case B: Multiple points, but no pair has x[j] < x[i].
+        int numPoints2 = 4;
+        Point[] nonDecreasingX = new Point[] {
+            new Point(1, 1),
+            new Point(2, 2),
+            new Point(3, 3),
+            new Point(4, 4)
+        };
+        Declarations decNonDecreasing = new Declarations(numPoints2, nonDecreasingX, params, null, null);
+        assertFalse(
+            decNonDecreasing.compute_lic_5(),
+            "Should return false when x never decreases in consecutive order."
+        );
+    }
+
+    /**
+    * Tests “invalid input” according to the contract:
+     * if the array it self is null should false be returned.
+     * If there is a null element in the array should false be return.
+     */
+    void testLic5PointerErrors() {
+        // Null array
+        Parameters params = new Parameters();
+        Point[] nullPoints = null;
+        Declarations decNull = new Declarations(0, nullPoints, params, null, null);
+        assertFalse(decNull.compute_lic_5(), "Should return false if the points array is null.");
+    
+        // Array with a null element
+        Point[] withNullElement = new Point[] {
+            new Point(0, 0),
+            null
+        };
+        Declarations decNullElement = new Declarations(2, withNullElement, params, null, null);
+        assertFalse(decNullElement.compute_lic_5(), "Should return false if any point in array is null.");
+    }
 
 
 
