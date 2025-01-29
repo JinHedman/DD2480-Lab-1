@@ -11,7 +11,7 @@ import Interception.src.main.java.Parameters;
 import Interception.src.main.java.Point;
 import Interception.src.main.java.Declarations;
 
-class DecideTest {
+class LICTest {
   
 
 //------------------------LIC1---------------------------------------
