@@ -215,6 +215,33 @@ class DecideTest {
 
     }
 
+   
+
+    /*
+     * Function for testing if LIC10 is true, which means testing if there exists at least one set of three data points separated by exactly E_PTS 
+     * and F_PTS consecutive intervening points, respectively, that are the vertices of a triangle with area greater than AREA1.
+     */
+    @Test
+    void testLic10True(){
+        Parameters params = new Parameters();
+        params.E_PTS= 1;
+        params.F_PTS= 1;
+        params.AREA1 = 2.0;
+        int NUMPOINTS = 5;
+        
+        Point[] points = new Point[] {new Point(0, 0), new Point(1, 1), new Point(3, 0), new Point(2, 2), new Point(0, 4)};     
+        
+        Declarations trueDecide = new Declarations(NUMPOINTS, points, params, null, null);
+        assertTrue(trueDecide.compute_lic_10());
+
+        Point[] falsePoints = new Point[] {new Point(0, 0), new Point(1, 1), new Point(0, 3), new Point(2, 2), new Point(0, 4)};     
+        
+        Declarations falseDecide = new Declarations(NUMPOINTS, falsePoints, params, null, null);
+        assertFalse(falseDecide.compute_lic_10());
+
+    }
+
+
     
       /*
      * Function for testing if LIC7 works correctly. It tests cases where NUMPOINTS < 3,
@@ -295,6 +322,5 @@ class DecideTest {
             "Angle is exactly PI => not < PI - EPS, not > PI + EPS => should be false.");
     } 
 }
-
 
 
