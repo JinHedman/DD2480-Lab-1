@@ -118,8 +118,11 @@ class DecideTest {
     }
 //----------------------------------------------------------------------
 
+//------------------------LIC12 TESTS-----------------------------------
 
-
+    /*
+     * Test LIC12 with a valid case.
+     */
     @Test
     void testLic12True() {
         Parameters params = new Parameters();
@@ -137,7 +140,10 @@ class DecideTest {
         assertTrue(decide.compute_lic_12());
     }
 
-    // Distances: 2 and 4. There is no distance smaller than LENGTH2 → LIC12 should fail
+    /*
+     * Tests that LIC12 returns false when there's no distance smaller than LENGTH2.
+     * Distances: 2 and 4. There is no distance smaller than LENGTH2 → LIC12 should fail
+     */ 
     @Test
     void testLic12FalseDueToDistances() {
         Parameters params = new Parameters();
@@ -155,7 +161,10 @@ class DecideTest {
         assertFalse(decide.compute_lic_12());
     }
 
-    // Only 2 points → LIC12 should fail immediately
+    /*
+     * Tests that LIC12 returns false when there's less fewer than 3 points.
+     * Only 2 points → LIC12 should fail immediately
+     */
     @Test
     void testLic12FalseDueToFewerThan3Points() {
         Parameters params = new Parameters();
@@ -168,7 +177,10 @@ class DecideTest {
         assertFalse(decide.compute_lic_12());
     }
 
-    // Only 4 points → no valid pairs with 3 intervening points
+    /*
+     * Tests that LIC12 returns false when theres too few points for the given K_PTS value. 
+     * Only 4 points → no valid pairs with 3 intervening points   
+     */
     @Test
     void testLic12FalseDueToNoValidPairs() {
         Parameters params = new Parameters();
@@ -188,10 +200,8 @@ class DecideTest {
 
     
 
-   /*
-    * 
-    * 
-    */
+//----------------------------------------------------------------------
+
 
 
 
