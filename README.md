@@ -3,6 +3,11 @@
 ### Description of the program
 The Launch Interceptor Program is a software system designed as part of a hypothetical anti-ballistic missile system. The core function, DECIDE(), evaluates radar tracking data to determine whether an interceptor missile should be launched. This decision is based on multiple Launch Interceptor Conditions (LICs), logical connectors, and decision matrices.
 
+
+### How to run 
+    - mvn clean install
+    - mvn test
+    - mvn test -Dtest=classname (if want to test a specific test class)
 ### Statement of contributions
 Adam Lihagen:
 - LIC 6, 8, 10 and 14
@@ -11,6 +16,10 @@ Adam Lihagen:
 Filip Hedman:
 
 Love Göransson:
+ - PUM function
+ - LIC 0,1,2,3,4,5 
+ - Maven config 
+
 
 Robin Widjeback:
 - LIC 12, 13
