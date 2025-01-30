@@ -313,7 +313,7 @@ class LICTest {
         assertFalse(falseDecide.compute_lic_6());
     }
 
-
+//------------------------LIC9 TESTS---------------------------------------
   
   /*
      * Function for testing if LIC9 returns the correct boolean value.   
@@ -321,7 +321,7 @@ class LICTest {
      * Returns false if the three points create a angle which does not satisfy the above statement or if NUMPOINTS < 5, 1 ≤ C PTS, 1 ≤ D PTS, C PTS+D PTS ≤ NUMPOINTS−3.
      */
     @Test
-    void testLic9() {
+    void testLic9true() {
         Parameters params = new Parameters();
         params.C_PTS = 1;
         params.D_PTS = 1;
@@ -338,14 +338,37 @@ class LICTest {
 
         Declarations declarations = new Declarations(NUMPOINTS, points, params, null, null);
         assertTrue(declarations.compute_lic_9(), "LIC9 should return true when an angle outside the range is found");
-
+    }
+    @Test
+    void testLic9false() {
+        Parameters params = new Parameters();
+        params.C_PTS = 1;
+        params.D_PTS = 1;
+        params.EPSILON = 0.1;
+        
+        int NUMPOINTS = 5;
         Point[] collinearPoints = new Point[] {
             new Point(0, 0), new Point(2, 2), new Point(4, 4), new Point(6, 6), new Point(8, 8)
         };
         Declarations collinearDecide = new Declarations(NUMPOINTS, collinearPoints, params, null, null);
         assertFalse(collinearDecide.compute_lic_9(), "LIC9 should return false for collinear points");
     }
-  
+    @Test
+    void testLic9invalid() {
+        Parameters params = new Parameters();
+        params.C_PTS = 1;
+        params.D_PTS = 1;
+        params.EPSILON = 0.1;
+        
+        int NUMPOINTS = 2;
+        Point[] collinearPoints = new Point[] {
+            new Point(0, 0), new Point(-2, -2), new Point(4, 4), new Point(6, 6), new Point(8, 8)
+        };
+        Declarations collinearDecide = new Declarations(NUMPOINTS, collinearPoints, params, null, null);
+        assertFalse(collinearDecide.compute_lic_9(), "LIC9 should return false for collinear points");
+    }
+//---------------------------------------------------------------------
+
   
     /*
      * Function for testing if LIC8 is true, which means testing if there exists at least one set of three data points separated by exactly A_PTS 
@@ -368,8 +391,6 @@ class LICTest {
         
         Declarations falseDecide = new Declarations(NUMPOINTS, falsePoints, params, null, null);
         assertFalse(falseDecide.compute_lic_8());
-
-
     }
 
 
@@ -670,28 +691,18 @@ class LICTest {
 
 //-------------------------------------------------------------------
 
+//------------------------ LIC11 ---------------------------------------
     /*
      * Function for testing if LIC11 returns the correct boolean value.   
      * Returns true if there exist two points with exacly G_PTS consecutive intervening points such that X[j] - X[i] < 0. (where i < j ).
      * Returns false if the condition is not met or if NUMPOINTS < 3, 1 ≤ G PTS ≤ NUMPOINTS−2.
      */
     @Test
-    void testLic11() {
+    void testLic11true() {
         Parameters params = new Parameters();
         params.G_PTS = 1;
         
         int NUMPOINTS = 5;
-        Point[] points = new Point[] {
-            new Point(5, 1), 
-            new Point(4, 2),
-            new Point(3, 3),  
-            new Point(2, 4),  
-            new Point(1, 5)   
-        };
-        
-        // true case
-        Declarations decreasingXDecide = new Declarations(NUMPOINTS, points, params, null, null);
-        assertTrue(decreasingXDecide.compute_lic_11(), "LIC11 should return true");
     
         // false case
         Point[] increasingXPoints = new Point[] {
@@ -700,6 +711,35 @@ class LICTest {
         Declarations increasingXDecide = new Declarations(NUMPOINTS, increasingXPoints, params, null, null);
         assertFalse(increasingXDecide.compute_lic_11(), "LIC11 should return false");
     }
+    @Test
+    void testLic11false() {
+        Parameters params = new Parameters();
+        params.G_PTS = 1;
+        
+        int NUMPOINTS = 5;
+
+        // false case
+        Point[] increasingXPoints = new Point[] {
+            new Point(1, 1), new Point(2, 2), new Point(3, 3), new Point(4, 4), new Point(5, 5)
+        };
+        Declarations increasingXDecide = new Declarations(NUMPOINTS, increasingXPoints, params, null, null);
+        assertFalse(increasingXDecide.compute_lic_11(), "LIC11 should return false");
+    }
+    @Test
+    void testLic11invalid() {
+        Parameters params = new Parameters();
+        params.G_PTS = 1;
+        
+        int NUMPOINTS = 2;
+
+        // false case
+        Point[] increasingXPoints = new Point[] {
+            new Point(1, 1), new Point(-5, -2), new Point(3, 3), new Point(4, 4), new Point(5, 5)
+        };
+        Declarations increasingXDecide = new Declarations(NUMPOINTS, increasingXPoints, params, null, null);
+        assertFalse(increasingXDecide.compute_lic_11(), "LIC11 should return false");
+    }
+//-------------------------------------------------------------------
     
     /*
      * Function for testing if LIC14 is true, which means testing if there exists at least one set of three data points, separated by exactly
@@ -843,51 +883,62 @@ class LICTest {
     }
 
 
-    
+//------------------------ LIC11 ---------------------------------------
     /*
      * Function for testing if LIC7 works correctly. It tests cases where NUMPOINTS < 3,
      * cases where the condition is met, and cases where the condition is not met.
      */
-    @Test
-    void testLic7() {
-        Parameters params = new Parameters();
-        // case 1 NUMPOINTS < 3,  should return false
-        params.LENGTH1 = 5;
-        params.K_PTS = 1;
-        int NUMPOINTS = 2; 
-        Point[] points = new Point[] { new Point(1, 1), new Point(2, 2) };
-        Declarations fewPoints = new Declarations(NUMPOINTS, points, params, null, null);
-        assertFalse(fewPoints.compute_lic_7(), "LIC7 should return false when NUMPOINTS < 3");
 
-        // case 2 valid case adn conditions, should return true
-        params.LENGTH1 = 3;
-        params.K_PTS = 1;
-        NUMPOINTS = 5;
-        points = new Point[] {new Point(1, 1),new Point(2, 2),new Point(3, 3),new Point(10, 10),new Point(4, 4)};
-        Declarations valid = new Declarations(NUMPOINTS, points, params, null, null);
-        assertTrue(valid.compute_lic_7(), "LIC7 should return true when the condition is met");
+     @Test
+     void testLic7true() {
+         Parameters params = new Parameters();
+         // valid case and conditions, should return true
+         params.LENGTH1 = 3;
+         params.K_PTS = 1;
+         int NUMPOINTS = 5;
+         Point[] points = new Point[] {new Point(1, 1),new Point(2, 2),new Point(3, 3),new Point(10, 10),new Point(4, 4)};
+         Declarations valid = new Declarations(NUMPOINTS, points, params, null, null);
+         assertTrue(valid.compute_lic_7(), "LIC7 should return true when the condition is met");
+ 
+     }
+     @Test
+     void testLic7false() {
+         Parameters params = new Parameters();
+         // NUMPOINTS < 3,  should return false
+         params.LENGTH1 = 5;
+         params.K_PTS = 1;
+         int NUMPOINTS = 2; 
+         Point[] points = new Point[] { new Point(1, 1), new Point(2, 2) };
+         Declarations fewPoints = new Declarations(NUMPOINTS, points, params, null, null);
+         assertFalse(fewPoints.compute_lic_7(), "LIC7 should return false when NUMPOINTS < 3");
+ 
+         // valid case invalid conditions, should return false
+         params.LENGTH1 = 10;
+         params.K_PTS = 1;
+         points = new Point[] {new Point(1, 1),new Point(2, 2),new Point(3, 3),new Point(4, 4),new Point(5, 5)};
+         Declarations invalid = new Declarations(NUMPOINTS, points, params, null, null);
+         assertFalse(invalid.compute_lic_7(), "LIC7 should return false when the condition is not met");
+     }
+     @Test
+     void testLic7edge() {
+         Parameters params = new Parameters();
+         // case 4 edge case, minimum K_PTS
+         int NUMPOINTS = 5;
+         params.LENGTH1 = 2;
+         params.K_PTS = 1; 
+         Point[] points = new Point[] {new Point(0, 0),new Point(0, 0),new Point(3, 4)};
+         Declarations edgeCaseMin = new Declarations(NUMPOINTS, points, params, null, null);
+         assertTrue(edgeCaseMin.compute_lic_7(), "LIC7 should return true for minimum K_PTS when condition is met");
+ 
+         // case 5 edge case, maximum K_PTS
+         params.LENGTH1 = 3;
+         params.K_PTS = NUMPOINTS - 2;
+         points = new Point[] {new Point(0, 0),new Point(1, 1), new Point(2, 2),new Point(3, 3),new Point(10, 10)};
+         Declarations edgecaseMax = new Declarations(NUMPOINTS, points, params, null, null);
+         assertTrue(edgecaseMax.compute_lic_7(), "LIC7 should return true for maximum K_PTS when condition is met");
+     }
+//----------------------------------------------------------------------
 
-        // case 3 valid case invalid conditions, should return false
-        params.LENGTH1 = 10;
-        params.K_PTS = 1;
-        points = new Point[] {new Point(1, 1),new Point(2, 2),new Point(3, 3),new Point(4, 4),new Point(5, 5)};
-        Declarations invalid = new Declarations(NUMPOINTS, points, params, null, null);
-        assertFalse(invalid.compute_lic_7(), "LIC7 should return false when the condition is not met");
-
-        // case 4 edge case, minimum K_PTS
-        params.LENGTH1 = 2;
-        params.K_PTS = 1; 
-        points = new Point[] {new Point(0, 0),new Point(0, 0),new Point(3, 4)};
-        Declarations edgeCaseMin = new Declarations(NUMPOINTS, points, params, null, null);
-        assertTrue(edgeCaseMin.compute_lic_7(), "LIC7 should return true for minimum K_PTS when condition is met");
-
-        // case 5 edge case, maximum K_PTS
-        params.LENGTH1 = 3;
-        params.K_PTS = NUMPOINTS - 2;
-        points = new Point[] {new Point(0, 0),new Point(1, 1), new Point(2, 2),new Point(3, 3),new Point(10, 10)};
-        Declarations edgecaseMax = new Declarations(NUMPOINTS, points, params, null, null);
-        assertTrue(edgecaseMax.compute_lic_7(), "LIC7 should return true for maximum K_PTS when condition is met");
-    }    
   
 
 //-----------------------LIC2---------------------------------------------------------
