@@ -661,6 +661,10 @@ public class Declarations {
     public boolean[] getPUV() {
         return PUV;
     }
+    // setter function for CMV
+    public void setCMV(boolean[] CMV){
+        this.CMV = CMV;
+    }
 
     // test code
     public static void main(String[] args) {
