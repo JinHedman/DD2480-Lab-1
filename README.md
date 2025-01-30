@@ -8,6 +8,11 @@ The Launch Interceptor Program is a software system designed as part of a hypoth
     - mvn clean install
     - mvn test
     - mvn test -Dtest=classname (if want to test a specific test class)
+
+### Requirements
+The program was built with the following versions of Java and Maven, but it might run on older versions as well.
+- Java 22.0.2
+- Maven 3.9.9
 ### Statement of contributions
 Adam Lihagen:
 - LIC 6, 8, 10 and 14
