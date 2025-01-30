@@ -14,6 +14,9 @@ Adam Lihagen:
 - Documentation (README file)
 
 Filip Hedman:
+ - FUV function
+ - Declarations class
+ - LIC 7,9,11
 
 Love Göransson:
  - PUM function
