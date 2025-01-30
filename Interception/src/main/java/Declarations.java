@@ -145,6 +145,9 @@ public class Declarations {
      * Code for the assertion that two consequitive points are a 
      */
     public boolean compute_lic_0(){
+        if(NUMPOINTS < 2 || params.LENGTH1 < 0){
+            return false; 
+        }
         for(int i=1; i < NUMPOINTS; i++){
             if(points[i].distance(points[i-1]) > params.LENGTH1){
                 return true;
@@ -174,6 +177,12 @@ public class Declarations {
 
     // Need to return the smallest possible circle 
     public boolean compute_lic_1(){
+
+        // Need to do some checks
+        if(NUMPOINTS < 3 || params.RADIUS1 < 0){
+            return false;
+        }
+
         for(int i = 2; i< NUMPOINTS; i++){
             double a = points[i-2].distance(points[i]);  
             double b = points[i-1].distance(points[i]);           
@@ -296,7 +305,12 @@ public class Declarations {
       }
 
     public boolean compute_lic_2(){
-            double EPS = params.EPSILON;      
+            double EPS = params.EPSILON;
+            
+            if(EPS < 0 || EPS > PI){
+                return false;
+            }
+            
             if (NUMPOINTS < 3) return false;
             for (int i = 1; i < NUMPOINTS - 1; i++) {
                 Point p1 = points[i - 1];
@@ -485,6 +499,16 @@ public class Declarations {
      */
     public boolean compute_lic_5(){
         // If NUMPOINTS is less than two should it fail.
+        if (points == null) {
+            return false;
+        }
+        // 4) Check for any null Point within the array
+        for (int i = 0; i < NUMPOINTS; i++) {
+        if (points[i] == null) {
+            return false;
+        }
+        }
+        
         if(NUMPOINTS < 2){
             return false; 
         }
